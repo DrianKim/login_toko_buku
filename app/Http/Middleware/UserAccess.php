@@ -20,6 +20,6 @@ class UserAccess
             return $next($request);
         }
 
-        return redirect()->back()->with('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman ini.');
+        abort(404, 'Unauthorized action.');
     }
 }

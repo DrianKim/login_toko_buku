@@ -16,6 +16,15 @@
         @endif
         <h1 style="text-align: center;">Halaman Admin</h1>
         <p>Hai {{ Auth()->user()->name }}!</p>
+        <form action="{{ route('admin.data-buku') }}" method="GET">
+            <button type="submit" style="margin-bottom: 1rem;">Lihat Data Buku</button>
+        </form>
+        <form action="{{ route('admin.kategori-buku') }}" method="GET">
+            <button type="submit" style="margin-bottom: 1rem;">Lihat Kategori Buku</button>
+        </form>
+        <form action="{{ route('admin.detail-buku') }}" method="GET">
+            <button type="submit" style="margin-bottom: 1rem;">Lihat Detail Buku</button>
+        </form>
         <form action="/logout" method="POST">
             @csrf
             <button type="submit">Logout</button>

@@ -33,5 +33,9 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('kasir123'),
             'role' => 'kasir',
         ]);
+
+        $this->call(DataBukuSeeder::class);
+        $this->call(KategoriBukuSeeder::class);
+        $this->call(DetailBukuSeeder::class);
     }
 }

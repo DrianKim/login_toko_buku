@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('detail_buku', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_buku')->unsigned();
+            $table->unsignedBigInteger('id_buku');
             $table->integer('stok');
-            $table->decimal('harga');
+            $table->decimal('harga', 10, 2);
             $table->timestamps();
+
+            $table->foreign('id_buku')->references('id')->on('data_buku')->onDelete('cascade');
         });
     }
 

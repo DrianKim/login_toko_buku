@@ -37,7 +37,7 @@ class AdminController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
             'cover_buku' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'id_kategori' => 'required|exists:kategori_buku,id',
+            'kategori_id' => 'required|exists:kategori_buku,id',
         ], [
             'kode_buku.required' => 'Kode buku wajib diisi.',
             'kode_buku.unique' => 'Kode buku sudah ada.',
@@ -52,8 +52,8 @@ class AdminController extends Controller
             'cover_buku.image' => 'File yang diunggah harus berupa gambar.',
             'cover_buku.mimes' => 'Format gambar harus jpeg, png, jpg, atau svg.',
             'cover_buku.max' => 'Ukuran gambar maksimal 2MB.',
-            'id_kategori.required' => 'Kategori buku wajib diisi.',
-            'id_kategori.exists' => 'Kategori buku tidak valid.',
+            'kategori_id.required' => 'Kategori buku wajib diisi.',
+            'kategori_id.exists' => 'Kategori buku tidak valid.',
         ]);
 
         if ($request->hasFile('cover_buku')) {
@@ -67,12 +67,124 @@ class AdminController extends Controller
         return redirect()->route('admin.data-buku')->with('success', 'Data buku berhasil ditambahkan.');
     }
 
+    public function editDataBuku($id)
+    {
+        $data = [
+            'kategori_buku' => KategoriBuku::all(),
+            'data_buku' => DataBuku::findOrFail($id),
+        ];
+        return view('admin.edit_data_buku', $data);
+    }
+
+    public function updateDataBuku(Request $request, $id)
+    {
+        $buku = DataBuku::findOrFail($id);
+
+        $validated = $request->validate([
+            'kode_buku' => 'required|string|max:255|unique:data_buku,kode_buku,' . $buku->id,
+            'judul_buku' => 'required|string|max:255',
+            'pengarang' => 'required|string|max:255',
+            'penerbit' => 'required|string|max:255',
+            'tahun_terbit' => 'required|integer|min:1900|max:' . date('Y'),
+            'cover_buku' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'kategori_id' => 'required|exists:kategori_buku,id',
+        ], [
+            'kode_buku.required' => 'Kode buku wajib diisi.',
+            'kode_buku.unique' => 'Kode buku sudah ada.',
+            'judul_buku.required' => 'Judul buku wajib diisi.',
+            'pengarang.required' => 'Pengarang wajib diisi.',
+            'penerbit.required' => 'Penerbit wajib diisi.',
+            'tahun_terbit.required' => 'Tahun terbit wajib diisi.',
+            'tahun_terbit.integer' => 'Tahun terbit harus berupa angka.',
+            'tahun_terbit.min' => 'Tahun terbit minimal 1900.',
+            'tahun_terbit.max' => 'Tahun terbit maksimal adalah tahun sekarang.',
+            'cover_buku.image' => 'File yang diunggah harus berupa gambar.',
+            'cover_buku.mimes' => 'Format gambar harus jpeg, png, jpg, atau svg.',
+            'cover_buku.max' => 'Ukuran gambar maksimal 2MB.',
+            'kategori_id.required' => 'Kategori buku wajib diisi.',
+            'kategori_id.exists' => 'Kategori buku tidak valid.',
+        ]);
+
+        if ($request->hasFile('cover_buku')) {
+            $imageName = time() . '.' . $request->cover_buku->extension();
+            $path = $request->file('cover_buku')->storeAs('images', $imageName, 'public');
+            $validated['cover_buku'] = $path;
+        }
+
+        $buku->update($validated);
+
+        return redirect()->route('admin.data-buku')->with('success', 'Data buku berhasil diperbarui.');
+    }
+
+    public function deleteDataBuku($id)
+    {
+        $buku = DataBuku::findOrFail($id);
+        $buku->delete();
+
+        return redirect()->route('admin.data-buku')->with('success', 'Data buku berhasil dihapus.');
+    }
+
     public function kategoriBuku()
     {
         $data = [
-            'kategori_buku' => KategoriBuku::with('buku')->get(),
+            'kategori_buku' => KategoriBuku::all(),
         ];
         return view('admin.kategori_buku', $data);
+    }
+
+    public function createKategoriBuku()
+    {
+        return view('admin.create_kategori_buku');
+    }
+
+    public function storeKategoriBuku(Request $request)
+    {
+        $validated = $request->validate([
+            'kategori' => 'required|string|max:255|unique:kategori_buku,kategori',
+            'jenis' => 'required|string|max:255',
+        ], [
+            'kategori.required' => 'Kategori wajib diisi.',
+            'kategori.unique' => 'Kategori sudah ada.',
+            'jenis.required' => 'Jenis wajib diisi.',
+        ]);
+
+        KategoriBuku::create($validated);
+
+        return redirect()->route('admin.kategori-buku')->with('success', 'Kategori buku berhasil ditambahkan.');
+    }
+
+    public function editKategoriBuku($id)
+    {
+        $data = [
+            'kategori_buku' => KategoriBuku::findOrFail($id),
+        ];
+        return view('admin.edit_kategori_buku', $data);
+    }
+
+    public function updateKategoriBuku(Request $request, $id)
+    {
+        $kategori = KategoriBuku::findOrFail($id);
+
+        $validated = $request->validate([
+            'kategori' => 'required|string|max:255|unique:kategori_buku,kategori,' . $kategori->id,
+            'jenis' => 'required|string|max:255',
+        ], [
+            'kategori.required' => 'Kategori wajib diisi.',
+            'kategori.unique' => 'Kategori sudah ada.',
+            'jenis.required' => 'Jenis wajib diisi.',
+        ]);
+
+        $kategori->update($validated);
+
+        return redirect()->route('admin.kategori-buku')->with('success', 'Kategori buku berhasil diperbarui.');
+    }
+
+    public function deleteKategoriBuku($id)
+    {
+        $kategori = KategoriBuku::findOrFail($id);
+        $kategori->delete();
+
+        return redirect()->route('admin.kategori-buku')->with('success', 'Kategori buku berhasil dihapus.');
     }
 
     public function detailBuku()

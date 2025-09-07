@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
             'role' => 'kasir',
         ]);
 
-        $this->call(DataBukuSeeder::class);
         $this->call(KategoriBukuSeeder::class);
+        $this->call(DataBukuSeeder::class);
         $this->call(DetailBukuSeeder::class);
     }
 }

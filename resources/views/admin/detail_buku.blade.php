@@ -1,40 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('admin.layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Detail Buku</title>
-</head>
+@section('content')
+    <h1 class="mb-4">Detail Buku</h1>
 
-<body>
-    <h1>Detail Buku</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Judul Buku</th>
-                <th>Stok</th>
-                <th>Harga</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($detail_buku as $Dbuku)
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
                 <tr>
-                    <td>{{ $Dbuku->id }}</td>
-                    <td>{{ $Dbuku->buku->judul_buku }}</td>
-                    <td>{{ $Dbuku->stok }}</td>
-                    <td>{{ $Dbuku->harga }}</td>
+                    <th class="text-center" style="width: 4%;">ID</th>
+                    <th class="text-center">Judul Buku</th>
+                    <th class="text-center">Stok</th>
+                    <th class="text-center">Harga</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <form action="{{ route('admin') }}" method="GET">
-        <button type="submit" style="margin-top: 1rem;">Kembali</button>
-    </form>
-
-</body>
-
-</html>
+            </thead>
+            <tbody>
+                @foreach ($detail_buku as $Dbuku)
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td>{{ $Dbuku->buku->judul_buku ?? '-' }}</td>
+                        <td class="text-center">{{ $Dbuku->stok }}</td>
+                        <td class="text-center">Rp {{ number_format($Dbuku->harga, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endsection

@@ -20,7 +20,7 @@ class DataBukuSeeder extends Seeder
             'pengarang' => 'John Doe',
             'tahun_terbit' => 2020,
             // 'cover_buku' => 'images/php_for_beginners.jpg',
-            'id_kategori' => 1,
+            'kategori_id' => 1,
         ]);
     }
 }

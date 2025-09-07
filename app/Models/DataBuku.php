@@ -14,11 +14,11 @@ class DataBuku extends Model
         'pengarang',
         'tahun_terbit',
         'cover_buku',
-        'id_kategori',
+        'kategori_id',
     ];
 
     public function Tbkategori()
     {
-        return $this->belongsTo(KategoriBuku::class, 'id_kategori');
+        return $this->belongsTo(KategoriBuku::class, 'kategori_id');
     }
 }

@@ -12,16 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_buku', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_buku')->unique();
-            $table->string('judul_buku');
-            $table->string('penerbit');
-            $table->string('pengarang');
-            $table->integer('tahun_terbit');
-            $table->string('cover_buku')->nullable();
-            $table->bigInteger('id_kategori');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('kode_buku')->unique();
+    $table->string('judul_buku');
+    $table->string('penerbit');
+    $table->string('pengarang');
+    $table->integer('tahun_terbit');
+    $table->string('cover_buku')->nullable();
+    $table->unsignedBigInteger('kategori_id'); // foreign key
+    $table->timestamps();
+
+    // Relasi ke tabel kategori
+    $table->foreign('kategori_id')->references('id')->on('kategori_buku')->onDelete('cascade');
+});
+
     }
 
     /**

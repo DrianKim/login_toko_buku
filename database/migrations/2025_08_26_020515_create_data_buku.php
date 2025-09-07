@@ -19,10 +19,9 @@ return new class extends Migration
     $table->string('pengarang');
     $table->integer('tahun_terbit');
     $table->string('cover_buku')->nullable();
-    $table->unsignedBigInteger('kategori_id'); // foreign key
+    $table->unsignedBigInteger('kategori_id');
     $table->timestamps();
 
-    // Relasi ke tabel kategori
     $table->foreign('kategori_id')->references('id')->on('kategori_buku')->onDelete('cascade');
 });
 

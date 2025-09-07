@@ -5,8 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Routing\Router;
 
-// Route::middleware('guest')->group(function () {
-// });
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/', [AuthController::class, 'login'])->name('login.post');
 

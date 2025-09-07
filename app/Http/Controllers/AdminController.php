@@ -158,6 +158,7 @@ class AdminController extends Controller
         $data = [
             'kategori_buku' => KategoriBuku::findOrFail($id),
         ];
+        
         return view('admin.edit_kategori_buku', $data);
     }
 

@@ -14,7 +14,7 @@ class AdminController extends Controller
     public function dataBuku()
     {
         $data = [
-            'data_buku' => DataBuku::with('Tbkategori')->get(),
+            'data_buku' => DataBuku::with(['Tbkategori', 'Tbdetail'])->get(),
         ];
 
         return view('admin.data_buku', $data);
@@ -158,7 +158,7 @@ class AdminController extends Controller
         $data = [
             'kategori_buku' => KategoriBuku::findOrFail($id),
         ];
-        
+
         return view('admin.edit_kategori_buku', $data);
     }
 
@@ -191,8 +191,28 @@ class AdminController extends Controller
     public function detailBuku()
     {
         $data = [
-            'detail_buku' => DetailBuku::with('buku')->get(),
+            'buku' => DataBuku::all(),
         ];
         return view('admin.detail_buku', $data);
+    }
+
+    public function storeDetailBuku(Request $request)
+    {
+        $validated = $request->validate([
+            'id_buku' => 'required|exists:data_buku,id',
+            'stok' => 'required|integer|min:0',
+            'harga' => 'required|numeric|min:0',
+        ], [
+            'stok.required' => 'Stok wajib diisi.',
+            'stok.integer' => 'Stok harus berupa angka.',
+            'stok.min' => 'Stok minimal 0.',
+            'harga.required' => 'Harga wajib diisi.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga minimal 0.',
+        ]);
+
+        DetailBuku::create($validated);
+
+        return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan.');
     }
 }

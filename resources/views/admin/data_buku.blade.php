@@ -24,10 +24,7 @@
                     <th class="text-center">Kode Buku</th>
                     <th class="text-center">Judul Buku</th>
                     <th class="text-center">Penerbit</th>
-                    <th class="text-center">Pengarang</th>
                     <th class="text-center">Tahun Terbit</th>
-                    <th class="text-center">Kategori</th>
-                    <th class="text-center">Cover Buku</th>
                     <th class="text-center"><i class="fa-solid fa-gear"></i></th>
                 </tr>
             </thead>
@@ -38,21 +35,18 @@
                         <td class="text-center">{{ $buku->kode_buku }}</td>
                         <td>{{ $buku->judul_buku }}</td>
                         <td>{{ $buku->penerbit }}</td>
-                        <td>{{ $buku->pengarang }}</td>
                         <td class="text-center">{{ $buku->tahun_terbit }}</td>
-                        <td class="text-center">{{ $buku->Tbkategori->kategori ?? '-' }}</td>
                         <td class="text-center">
-                            @if ($buku->cover_buku)
-                                <img src="{{ asset("storage/{$buku->cover_buku}") }}" alt="Cover Buku"
-                                    style="max-width: 80px;" class="img-thumbnail">
-                            @else
-                                <span class="text-muted">No Cover</span>
-                            @endif
-                        </td>
-                        <td class="text-center">
+                            <!-- Tombol Show -->
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#showBukuModal{{ $buku->id }}">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+
                             <a href="{{ route('admin.data-buku.edit', $buku->id) }}" class="btn btn-sm btn-warning mb-1">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
+
                             <form action="{{ route('admin.data-buku.destroy', $buku->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
@@ -64,6 +58,8 @@
                             </form>
                         </td>
                     </tr>
+
+                    @include('admin.modal.show_buku', ['buku' => $buku])
                 @endforeach
             </tbody>
         </table>

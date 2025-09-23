@@ -34,10 +34,10 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
     Route::delete('admin/kategori-buku/{id}', [AdminController::class, 'deleteKategoriBuku'])->name('admin.kategori.destroy');
 
     Route::get('admin/detail-buku', [AdminController::class, 'detailBuku'])->name('admin.detail-buku');
+    Route::post('admin/detail-buku', [AdminController::class, 'storeDetailBuku'])->name('admin.detail-buku.store');
 });
 
 // kasir
 Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
     Route::get('/kasir', fn() => view('kasir.index'))->name('kasir');
 });
-

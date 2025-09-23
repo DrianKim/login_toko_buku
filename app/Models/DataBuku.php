@@ -21,4 +21,9 @@ class DataBuku extends Model
     {
         return $this->belongsTo(KategoriBuku::class, 'kategori_id');
     }
+
+    public function Tbdetail()
+    {
+        return $this->hasOne(DetailBuku::class, 'id_buku');
+    }
 }

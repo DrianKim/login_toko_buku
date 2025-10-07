@@ -2,22 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\DataBuku;
 use App\Models\DetailBuku;
 use App\Models\KategoriBuku;
 use Illuminate\Http\Request;
-use PhpParser\Node\Scalar\DNumber;
 use ReflectionFunctionAbstract;
+use PhpParser\Node\Scalar\DNumber;
 
 class AdminController extends Controller
 {
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
     public function dataBuku()
     {
         $data = [
             'data_buku' => DataBuku::with(['Tbkategori', 'Tbdetail'])->get(),
         ];
 
-        return view('admin.data_buku', $data);
+        return view('admin.buku.index', $data);
     }
 
     public function createDataBuku()
@@ -25,13 +30,12 @@ class AdminController extends Controller
         $data = [
             'kategori_buku' => KategoriBuku::all(),
         ];
-        return view('admin.create_data_buku', $data);
+        return view('admin.buku.create', $data);
     }
 
     public function storeDataBuku(Request $request)
     {
         $validated = $request->validate([
-            'kode_buku' => 'required|string|max:255|unique:data_buku,kode_buku',
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
@@ -39,8 +43,6 @@ class AdminController extends Controller
             'cover_buku' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
             'kategori_id' => 'required|exists:kategori_buku,id',
         ], [
-            'kode_buku.required' => 'Kode buku wajib diisi.',
-            'kode_buku.unique' => 'Kode buku sudah ada.',
             'judul_buku.required' => 'Judul buku wajib diisi.',
             'pengarang.required' => 'Pengarang wajib diisi.',
             'penerbit.required' => 'Penerbit wajib diisi.',
@@ -56,6 +58,24 @@ class AdminController extends Controller
             'kategori_id.exists' => 'Kategori buku tidak valid.',
         ]);
 
+        $kategori = KategoriBuku::findOrFail($request->kategori_id);
+
+        $prefix = 'BK' . strtoupper(substr($kategori->kategori, 0, 1)) . strtoupper(substr($kategori->jenis, 0, 1));
+
+        $lastBook = DataBuku::where('kode_buku', 'like', $prefix . '%')
+            ->orderBy('kode_buku', 'desc')
+            ->first();
+
+        $nextNumber = 1;
+        if ($lastBook) {
+            $lastNumber = intval(substr($lastBook->kode_buku, -3));
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $kodeBuku = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+        $validated['kode_buku'] = $kodeBuku;
+
         if ($request->hasFile('cover_buku')) {
             $imageName = time() . '.' . $request->cover_buku->extension();
             $path = $request->file('cover_buku')->storeAs('images', $imageName, 'public');
@@ -67,13 +87,14 @@ class AdminController extends Controller
         return redirect()->route('admin.data-buku')->with('success', 'Data buku berhasil ditambahkan.');
     }
 
+
     public function editDataBuku($id)
     {
         $data = [
             'kategori_buku' => KategoriBuku::all(),
             'data_buku' => DataBuku::findOrFail($id),
         ];
-        return view('admin.edit_data_buku', $data);
+        return view('admin.buku.edit', $data);
     }
 
     public function updateDataBuku(Request $request, $id)
@@ -81,7 +102,6 @@ class AdminController extends Controller
         $buku = DataBuku::findOrFail($id);
 
         $validated = $request->validate([
-            'kode_buku' => 'required|string|max:255|unique:data_buku,kode_buku,' . $buku->id,
             'judul_buku' => 'required|string|max:255',
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
@@ -89,8 +109,6 @@ class AdminController extends Controller
             'cover_buku' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'kategori_id' => 'required|exists:kategori_buku,id',
         ], [
-            'kode_buku.required' => 'Kode buku wajib diisi.',
-            'kode_buku.unique' => 'Kode buku sudah ada.',
             'judul_buku.required' => 'Judul buku wajib diisi.',
             'pengarang.required' => 'Pengarang wajib diisi.',
             'penerbit.required' => 'Penerbit wajib diisi.',
@@ -105,6 +123,32 @@ class AdminController extends Controller
             'kategori_id.exists' => 'Kategori buku tidak valid.',
         ]);
 
+        $kategoriBaru = KategoriBuku::findOrFail($request->kategori_id);
+
+        $kategoriLama = $buku->kategori_id ? KategoriBuku::find($buku->kategori_id) : null;
+        $kategoriBerubah = !$kategoriLama ||
+            ($kategoriLama->kategori !== $kategoriBaru->kategori ||
+                $kategoriLama->jenis !== $kategoriBaru->jenis);
+
+        if ($kategoriBerubah) {
+            $prefix = 'BK' . strtoupper(substr($kategoriBaru->kategori, 0, 1)) . strtoupper(substr($kategoriBaru->jenis, 0, 1));
+
+            $lastBook = DataBuku::where('kode_buku', 'like', $prefix . '%')
+                ->orderBy('kode_buku', 'desc')
+                ->first();
+
+            $nextNumber = 1;
+            if ($lastBook) {
+                $lastNumber = intval(substr($lastBook->kode_buku, -3));
+                $nextNumber = $lastNumber + 1;
+            }
+
+            $kodeBaru = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+            $validated['kode_buku'] = $kodeBaru;
+        } else {
+            $validated['kode_buku'] = $buku->kode_buku;
+        }
+
         if ($request->hasFile('cover_buku')) {
             $imageName = time() . '.' . $request->cover_buku->extension();
             $path = $request->file('cover_buku')->storeAs('images', $imageName, 'public');
@@ -115,6 +159,7 @@ class AdminController extends Controller
 
         return redirect()->route('admin.data-buku')->with('success', 'Data buku berhasil diperbarui.');
     }
+
 
     public function deleteDataBuku($id)
     {
@@ -129,12 +174,12 @@ class AdminController extends Controller
         $data = [
             'kategori_buku' => KategoriBuku::all(),
         ];
-        return view('admin.kategori_buku', $data);
+        return view('admin.kategori.index', $data);
     }
 
     public function createKategoriBuku()
     {
-        return view('admin.create_kategori_buku');
+        return view('admin.kategori.create');
     }
 
     public function storeKategoriBuku(Request $request)
@@ -159,7 +204,7 @@ class AdminController extends Controller
             'kategori_buku' => KategoriBuku::findOrFail($id),
         ];
 
-        return view('admin.edit_kategori_buku', $data);
+        return view('admin.kategori.edit', $data);
     }
 
     public function updateKategoriBuku(Request $request, $id)
@@ -193,7 +238,7 @@ class AdminController extends Controller
         $data = [
             'buku' => DataBuku::all(),
         ];
-        return view('admin.detail_buku', $data);
+        return view('admin.detail.index', $data);
     }
 
     public function storeDetailBuku(Request $request)
@@ -214,5 +259,91 @@ class AdminController extends Controller
         DetailBuku::create($validated);
 
         return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan.');
+    }
+
+    public function indexUser()
+    {
+        $data = [
+            'users' => User::all(),
+        ];
+        return view('admin.users.index', $data);
+    }
+
+    public function createUser()
+    {
+        return view('admin.users.create');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,kasir',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'role.required' => 'Role wajib diisi.',
+            'role.in' => 'Role tidak valid.',
+        ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function editUser($id)
+    {
+        $data = [
+            'user' => User::findOrFail($id),
+        ];
+
+        return view('admin.users.edit', $data);
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|in:admin,kasir',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+            'role.required' => 'Role wajib diisi.',
+            'role.in' => 'Role tidak valid.',
+        ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
     }
 }

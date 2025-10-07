@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use Illuminate\Routing\Router;
+use App\Http\Controllers\KasirController;
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/', [AuthController::class, 'login'])->name('login.post');
@@ -17,7 +18,7 @@ Route::middleware(['auth', 'UserAccess:owner'])->group(function () {
 
 // admin
 Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
-    Route::get('/admin', fn() => view('admin.index'))->name('admin');
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin');
 
     Route::get('admin/data-buku', [AdminController::class, 'dataBuku'])->name('admin.data-buku');
     Route::get('admin/data-buku/create', [AdminController::class, 'createDataBuku'])->name('admin.data-buku.create');
@@ -35,9 +36,24 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
 
     Route::get('admin/detail-buku', [AdminController::class, 'detailBuku'])->name('admin.detail-buku');
     Route::post('admin/detail-buku', [AdminController::class, 'storeDetailBuku'])->name('admin.detail-buku.store');
+
+    Route::get('admin/users', [AdminController::class, 'indexUser'])->name('admin.users.index');
+    Route::get('admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
+    Route::post('admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+    Route::get('admin/users/edit/{id}', [AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('admin/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('admin/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.destroy');
 });
 
 // kasir
 Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
-    Route::get('/kasir', fn() => view('kasir.index'))->name('kasir');
+    Route::get('/kasir', [KasirController::class, 'dashboard'])->name('kasir');
+
+    Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
+
+    Route::post('kasir/transaksi', [KasirController::class, 'storeTransaksi'])->name('kasir.transaksi.store');
+
+    Route::get('kasir.riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
 });
+
+

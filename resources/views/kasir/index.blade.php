@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('kasir.layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/coba.css') }}">
-    <title>Kasir</title>
-</head>
-
-<body>
-    <div class="container">
-        @if (session('error'))
-            <div style="color: red;">{{ session('error') }}</div>
-        @endif
-        <h1 style="text-align: center;">Halaman Kasir</h1>
-        <p>Hai {{ Auth()->user()->name }}!</p>
-        <form action="/logout" method="POST">
-            @csrf
-            <button type="submit">Logout</button>
-        </form>
+@section('content')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Kasir Dashboard</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Welcome to the Kasir Dashboard!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-
-</html>
+@endsection

@@ -1,124 +1,172 @@
 @extends('admin.layouts.app')
 
-@section('content')
-    <h1 class="mb-4">Tambah Detail Buku</h1>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form action="{{ route('admin.detail-buku.store') }}" method="POST">
-                @csrf
-                <div class="row g-3">
-                    {{-- Dropdown Buku --}}
-                    <div class="col-md-8">
-                        <label class="form-label">Pilih Buku</label>
-                        <select class="form-select" id="bukuSelect" name="id_buku" required>
-                            <option value="">-- Pilih Judul Buku --</option>
-                            @foreach ($buku as $item)
-                                <option value="{{ $item->id }}"
-                                    data-kode="{{ $item->kode_buku }}"
-                                    data-judul="{{ $item->judul_buku }}"
-                                    data-tahun="{{ $item->tahun_terbit }}"
-                                    data-stok="{{ $item->stok }}"
-                                    data-harga="{{ $item->harga }}"
-                                    >{{ $item->judul_buku }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                {{-- Input Stok & Harga --}}
-                <div class="row g-3 mt-3" id="detailInputs" style="display: none;">
-                    <div class="col-md-4">
-                        <label class="form-label">Stok</label>
-                        <input type="number" class="form-control" name="stok" id="inputStok" placeholder="Masukkan stok"
-                            value="{{ old('stok') }}" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Harga</label>
-                        <input type="number" class="form-control" name="harga" id="inputHarga" placeholder="Masukkan harga"
-                            value="{{ old('harga') }}" required>
-                    </div>
-                </div>
-
-                {{-- Tabel Detail Buku --}}
-                <div class="row mt-3" id="bukuDetailTable" style="display: none;">
-                    <div class="col-12">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">#</th>
-                                    <th class="text-center">Kode Buku</th>
-                                    <th>Judul Buku</th>
-                                    <th class="text-center">Stok</th>
-                                    <th class="text-center">Harga</th>
-                                    <th class="text-center">Tahun Terbit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center" id="tableIter">1</td>
-                                    <td class="text-center" id="tableKode"></td>
-                                    <td id="tableJudul"></td>
-                                    <td class="text-center" id="tableStok"></td>
-                                    <td class="text-center" id="tableHarga"></td>
-                                    <td class="text-center" id="tableTahun"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-dark mt-3">Simpan</button>
-            </form>
-        </div>
-    </div>
-
+{{-- SweetAlert Notif --}}
+@if (session('success'))
     <script>
-        function updateTable() {
-            document.getElementById('tableStok').textContent = document.getElementById('inputStok').value;
-            document.getElementById('tableHarga').textContent = document.getElementById('inputHarga').value;
-        }
-
-        document.getElementById('bukuSelect').addEventListener('change', function() {
-            const detailInputs = document.getElementById('detailInputs');
-            const bukuDetailTable = document.getElementById('bukuDetailTable');
-            const selected = this.options[this.selectedIndex];
-
-            if (this.value) {
-                detailInputs.style.display = 'flex';
-                bukuDetailTable.style.display = 'block';
-
-                document.getElementById('tableKode').textContent = selected.getAttribute('data-kode');
-                document.getElementById('tableJudul').textContent = selected.getAttribute('data-judul');
-                document.getElementById('tableTahun').textContent = selected.getAttribute('data-tahun') ?? '';
-
-                const stok = selected.getAttribute('data-stok');
-                const harga = selected.getAttribute('data-harga');
-                document.getElementById('inputStok').value = stok ? stok : '';
-                document.getElementById('inputHarga').value = harga ? harga : '';
-                updateTable();
-            } else {
-                detailInputs.style.display = 'none';
-                bukuDetailTable.style.display = 'none';
-
-                document.getElementById('tableKode').textContent = '';
-                document.getElementById('tableJudul').textContent = '';
-                document.getElementById('tableStok').textContent = '';
-                document.getElementById('tableHarga').textContent = '';
-                document.getElementById('tableTahun').textContent = '';
-                document.getElementById('inputStok').value = '';
-                document.getElementById('inputHarga').value = '';
-            }
-        });
-
-        document.getElementById('inputStok').addEventListener('input', updateTable);
-        document.getElementById('inputHarga').addEventListener('input', updateTable);
-
-        window.addEventListener('DOMContentLoaded', function() {
-            const bukuSelect = document.getElementById('bukuSelect');
-            if (bukuSelect.value) {
-                bukuSelect.dispatchEvent(new Event('change'));
-            }
+        document.addEventListener("DOMContentLoaded", () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#2563eb',
+            });
         });
     </script>
+@endif
+
+@if (session('error'))
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#2563eb',
+            });
+        });
+    </script>
+@endif
+
+@section('content')
+<div class="max-w-5xl mx-auto px-6 py-10">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-blue-700">Tambah Detail Buku</h1>
+        <a href="{{ route('admin.detail-buku') }}"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition font-medium shadow-sm">
+            <i class="fas fa-arrow-left mr-2"></i>Kembali
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg border border-blue-100 p-8">
+        <form action="{{ route('admin.detail-buku.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            {{-- Dropdown Buku --}}
+            <div>
+                <label class="block font-semibold text-gray-700 mb-2">Pilih Buku</label>
+                <select id="bukuSelect" name="id_buku"
+                    class="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition" required>
+                    <option value="">-- Pilih Judul Buku --</option>
+                    @foreach ($buku as $item)
+                        <option value="{{ $item->id }}"
+                            data-kode="{{ $item->kode_buku }}"
+                            data-judul="{{ $item->judul_buku }}"
+                            data-tahun="{{ $item->tahun_terbit }}"
+                            data-stok="{{ $item->stok ?? 0 }}"
+                            data-harga="{{ $item->harga ?? 0 }}">
+                            {{ $item->judul_buku }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('id_buku')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Input Stok & Harga --}}
+            <div id="detailInputs" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-2">Stok</label>
+                    <input type="number" name="stok" id="inputStok"
+                        class="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                        placeholder="Masukkan stok" value="{{ old('stok') }}" required>
+                    @error('stok')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-2">Harga</label>
+                    <input type="number" name="harga" id="inputHarga"
+                        class="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                        placeholder="Masukkan harga" value="{{ old('harga') }}" required>
+                    @error('harga')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            {{-- Tabel Preview --}}
+            <div id="bukuDetailTable" class="hidden">
+                <h3 class="text-lg font-semibold text-blue-700 mb-3 mt-4">Preview Detail Buku</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left border border-blue-100 rounded-lg overflow-hidden">
+                        <thead class="bg-blue-100 text-blue-800 uppercase text-xs font-semibold">
+                            <tr>
+                                <th class="px-6 py-3 text-center">#</th>
+                                <th class="px-6 py-3 text-center">Kode Buku</th>
+                                <th class="px-6 py-3">Judul Buku</th>
+                                <th class="px-6 py-3 text-center">Stok</th>
+                                <th class="px-6 py-3 text-center">Harga</th>
+                                <th class="px-6 py-3 text-center">Tahun Terbit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b hover:bg-blue-50 transition">
+                                <td class="px-6 py-3 text-center font-semibold">1</td>
+                                <td class="px-6 py-3 text-center font-semibold" id="tableKode"></td>
+                                <td class="px-6 py-3" id="tableJudul"></td>
+                                <td class="px-6 py-3 text-center" id="tableStok"></td>
+                                <td class="px-6 py-3 text-center" id="tableHarga"></td>
+                                <td class="px-6 py-3 text-center" id="tableTahun"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- Tombol Simpan --}}
+            <div class="flex justify-end">
+                <button type="submit"
+                    class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition">
+                    <i class="fas fa-save mr-2"></i> Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Script Buku Preview --}}
+<script>
+    const bukuSelect = document.getElementById('bukuSelect');
+    const detailInputs = document.getElementById('detailInputs');
+    const bukuDetailTable = document.getElementById('bukuDetailTable');
+    const inputStok = document.getElementById('inputStok');
+    const inputHarga = document.getElementById('inputHarga');
+
+    const tableKode = document.getElementById('tableKode');
+    const tableJudul = document.getElementById('tableJudul');
+    const tableStok = document.getElementById('tableStok');
+    const tableHarga = document.getElementById('tableHarga');
+    const tableTahun = document.getElementById('tableTahun');
+
+    bukuSelect.addEventListener('change', function() {
+        const selected = this.options[this.selectedIndex];
+
+        if (this.value) {
+            detailInputs.classList.remove('hidden');
+            bukuDetailTable.classList.remove('hidden');
+
+            // Isi preview tabel
+            tableKode.textContent = selected.dataset.kode;
+            tableJudul.textContent = selected.dataset.judul;
+            tableTahun.textContent = selected.dataset.tahun || '-';
+            inputStok.value = selected.dataset.stok || 0;
+            inputHarga.value = selected.dataset.harga || 0;
+
+            updateTable();
+        } else {
+            detailInputs.classList.add('hidden');
+            bukuDetailTable.classList.add('hidden');
+        }
+    });
+
+    function updateTable() {
+        tableStok.textContent = inputStok.value;
+        tableHarga.textContent = inputHarga.value;
+    }
+
+    inputStok.addEventListener('input', updateTable);
+    inputHarga.addEventListener('input', updateTable);
+</script>
 @endsection

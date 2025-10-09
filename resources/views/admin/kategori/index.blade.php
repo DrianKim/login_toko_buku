@@ -46,7 +46,9 @@
                         <th class="px-6 py-3 text-center w-12">#</th>
                         <th class="px-6 py-3 text-center">Kategori</th>
                         <th class="px-6 py-3 text-center">Jenis</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
+                        <th class="px-6 py-3 text-center">
+                            <i class="fas fa-cog"></i>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

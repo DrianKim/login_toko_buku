@@ -185,11 +185,10 @@ class AdminController extends Controller
     public function storeKategoriBuku(Request $request)
     {
         $validated = $request->validate([
-            'kategori' => 'required|string|max:255|unique:kategori_buku,kategori',
+            'kategori' => 'required|string|max:255',
             'jenis' => 'required|string|max:255',
         ], [
             'kategori.required' => 'Kategori wajib diisi.',
-            'kategori.unique' => 'Kategori sudah ada.',
             'jenis.required' => 'Jenis wajib diisi.',
         ]);
 
@@ -212,7 +211,7 @@ class AdminController extends Controller
         $kategori = KategoriBuku::findOrFail($id);
 
         $validated = $request->validate([
-            'kategori' => 'required|string|max:255|unique:kategori_buku,kategori,' . $kategori->id,
+            'kategori' => 'required|string|max:255' . $kategori->id,
             'jenis' => 'required|string|max:255',
         ], [
             'kategori.required' => 'Kategori wajib diisi.',
@@ -236,6 +235,7 @@ class AdminController extends Controller
     public function detailBuku()
     {
         $data = [
+            'detail_buku' => DetailBuku::with('buku')->get(),
             'buku' => DataBuku::all(),
         ];
         return view('admin.detail.index', $data);
@@ -243,22 +243,29 @@ class AdminController extends Controller
 
     public function storeDetailBuku(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'id_buku' => 'required|exists:data_buku,id',
-            'stok' => 'required|integer|min:0',
+            'stok' => 'required|numeric|min:0',
             'harga' => 'required|numeric|min:0',
-        ], [
-            'stok.required' => 'Stok wajib diisi.',
-            'stok.integer' => 'Stok harus berupa angka.',
-            'stok.min' => 'Stok minimal 0.',
-            'harga.required' => 'Harga wajib diisi.',
-            'harga.numeric' => 'Harga harus berupa angka.',
-            'harga.min' => 'Harga minimal 0.',
         ]);
 
-        DetailBuku::create($validated);
+        $detail = DetailBuku::where('id_buku', $request->id_buku)->first();
 
-        return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan.');
+        if ($detail) {
+            $detail->stok = $detail->stok + $request->stok;
+            $detail->harga = $request->harga;
+            $detail->save();
+
+            return redirect()->route('admin.detail-buku')->with('success', 'Stok buku berhasil diperbarui!');
+        } else {
+            DetailBuku::create([
+                'id_buku' => $request->id_buku,
+                'stok' => $request->stok,
+                'harga' => $request->harga,
+            ]);
+
+            return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan!');
+        }
     }
 
     public function indexUser()

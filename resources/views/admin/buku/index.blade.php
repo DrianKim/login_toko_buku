@@ -47,7 +47,9 @@
                         <th class="px-6 py-3">Judul Buku</th>
                         <th class="px-6 py-3">Penerbit</th>
                         <th class="px-6 py-3 text-center">Tahun Terbit</th>
-                        <th class="px-6 py-3 text-center">Aksi</th>
+                        <th class="px-6 py-3 text-center">
+                            <i class="fas fa-cog"></i>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

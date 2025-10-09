@@ -5,14 +5,13 @@
         <!-- Header -->
         <div
             class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 relative overflow-hidden flex items-center justify-between">
-            <h5 class="text-lg font-semibold">Detail Buku</h5>
+            <h5 class="text-lg font-semibold">Rincian Buku</h5>
             <button type="button"
                 class="text-white/80 hover:text-white transition text-xl"
                 data-modal-close="showBukuModal{{ $buku->id }}">
-                <i class="fa-solid fa-xmark"></i>
+                {{-- <i class="fa-solid fa-xmark"></i> --}}
             </button>
 
-            <!-- Dekorasi emoji 📚 -->
             <div class="absolute top-0 right-0 text-white/10 text-8xl leading-none select-none">📚</div>
         </div>
 

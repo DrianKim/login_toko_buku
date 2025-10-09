@@ -49,11 +49,14 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
 Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
     Route::get('/kasir', [KasirController::class, 'dashboard'])->name('kasir');
 
-    Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
+    Route::get('kasir/data-buku', [KasirController::class, 'indexbuku'])->name('kasir.buku');
 
-    Route::post('kasir/transaksi', [KasirController::class, 'storeTransaksi'])->name('kasir.transaksi.store');
+    Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
+    Route::post('/kasir/transaksi', [KasirController::class, 'addToCart'])->name('kasir.transaksi.addToCart');
+    Route::post('/kasir/transaksi/update-qty/{buku}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.updateQty');
+    Route::post('/kasir/transaksi/remove/{buku_id}', [KasirController::class, 'removeFromCart'])->name('transaksi.remove');
+    Route::post('/kasir/transaksi/checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
+    Route::get('/kasir/transaksi/struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
 
     Route::get('kasir.riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
 });
-
-

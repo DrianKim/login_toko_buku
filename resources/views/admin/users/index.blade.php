@@ -42,11 +42,13 @@
                 <table class="min-w-full text-sm text-left text-gray-700">
                     <thead class="bg-blue-100 text-blue-800 uppercase text-xs font-semibold">
                         <tr>
-                            <th class="px-6 py-3">ID</th>
+                            <th class="px-6 py-3">#</th>
                             <th class="px-6 py-3">Nama</th>
                             <th class="px-6 py-3">Email</th>
                             <th class="px-6 py-3">Role</th>
-                            <th class="px-6 py-3 text-center">Aksi</th>
+                            <th class="px-6 py-3 text-center">
+                                <i class="fas fa-cog"></i>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

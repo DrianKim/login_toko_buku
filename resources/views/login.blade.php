@@ -127,14 +127,14 @@
 
                 </form>
 
+                {{-- Footer --}}
+                <div class="text-center mt-6 text-sm text-blue-500">
+                    <p>&copy; 2025 Toko Buku. All rights reserved.</p>
+                </div>
             </div>
 
         </div>
 
-        {{-- Footer --}}
-        <div class="text-center mt-6 text-sm text-blue-500">
-            <p>&copy; 2025 Toko Buku. All rights reserved.</p>
-        </div>
 
     </div>
 

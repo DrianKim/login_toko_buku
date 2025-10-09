@@ -35,9 +35,9 @@
                 </a>
 
                 {{-- Transaksi --}}
-                <a href="{{ route('kasir.transaksi') }}"
+                <a href="{{ route('kasir.buku') }}"
                     class="flex items-center px-3 py-2 rounded-lg transition
-                        {{ request()->routeIs('kasir.transaksi*') ? 'text-blue-600 font-semibold bg-indigo-50' : 'hover:bg-indigo-50 hover:text-indigo-600' }}">
+                        {{ request()->routeIs('kasir.buku*') ? 'text-blue-600 font-semibold bg-indigo-50' : 'hover:bg-indigo-50 hover:text-indigo-600' }}">
                     <i class="fa-solid fa-cash-register mr-3"></i> Transaksi
                 </a>
 

@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('owner.layouts.app')
 
 @if ($errors->any())
     <script>
@@ -33,7 +33,7 @@
         </h1>
 
         <div class="bg-white p-8 rounded-2xl shadow-lg border border-blue-100">
-            <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-6">
+            <form action="{{ route('owner.users.update', $user->id) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -89,14 +89,14 @@
                         class="w-full border border-blue-200 rounded-lg px-3 py-2 bg-white text-gray-800
                         focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required>
-                        {{-- <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option> --}}
-                        <option selected value="kasir" {{ old('role', $user->role) == 'kasir' ? 'selected' : '' }}>Kasir</option>
+                        <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="kasir" {{ old('role', $user->role) == 'kasir' ? 'selected' : '' }}>Kasir</option>
                     </select>
                 </div>
 
                 {{-- Tombol --}}
                 <div class="flex justify-end space-x-4 pt-4 border-t border-blue-100">
-                    <a href="{{ route('admin.users.index') }}"
+                    <a href="{{ route('owner.users.index') }}"
                         class="px-5 py-2.5 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition font-medium">
                         Batal
                     </a>

@@ -6,14 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Toko Buku')</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Font & Icons -->
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=Figtree:400,600,700,800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- AlpineJS -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         [x-cloak] {
@@ -25,11 +31,14 @@
 <body x-data="{ openSidebar: true, dropdown: false }" class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- Overlay untuk mobile -->
-    <div x-show="openSidebar" @click="openSidebar = false" x-transition.opacity
+    <div x-show="openSidebar"
+        @click="openSidebar = false"
+        x-transition.opacity
         class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
     <!-- Sidebar -->
-    <aside x-cloak :class="openSidebar ? 'translate-x-0' : '-translate-x-full'"
+    <aside x-cloak
+        :class="openSidebar ? 'translate-x-0' : '-translate-x-full'"
         class="fixed left-0 top-0 w-64 h-full bg-white border-r shadow-lg flex flex-col p-4 transform transition-transform duration-300 z-50">
 
         <!-- Logo -->
@@ -48,24 +57,13 @@
 
         <!-- Nav -->
         <nav class="flex flex-col gap-2 mb-auto text-sm">
-            <a href="{{ route('admin') }}"
-                class="nav-link {{ request()->routeIs('admin') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+            <a href="{{ route('owner') }}" class="nav-link {{ request()->routeIs('owner') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
-            <a href="{{ route('admin.data-buku') }}"
-                class="nav-link {{ request()->routeIs('admin.data-buku') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+            <a href="{{ route('owner.data-buku') }}" class="nav-link {{ request()->routeIs('owner.data-buku') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
                 <i class="fa-solid fa-book"></i> Data Buku
             </a>
-            <a href="{{ route('admin.kategori-buku') }}"
-                class="nav-link {{ request()->routeIs('admin.kategori-buku') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
-                <i class="fa-solid fa-tags"></i> Kategori Buku
-            </a>
-            <a href="{{ route('admin.detail-buku') }}"
-                class="nav-link {{ request()->routeIs('admin.detail-buku') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
-                <i class="fa-solid fa-book-open"></i> Detail Buku
-            </a>
-            <a href="{{ route('admin.users.index') }}"
-                class="nav-link {{ request()->routeIs('admin.users.*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+            <a href="{{ route('owner.users.index') }}" class="nav-link {{ request()->routeIs('owner.users.*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
                 <i class="fa-solid fa-users"></i> User Management
             </a>
         </nav>
@@ -87,8 +85,7 @@
         <!-- Navbar -->
         <header class="flex items-center justify-between bg-white border-b shadow-sm px-6 h-16 sticky top-0 z-30">
             <div class="flex items-center gap-3">
-                <button @click="openSidebar = !openSidebar"
-                    class="text-gray-600 hover:text-indigo-600 transition cursor-pointer">
+                <button @click="openSidebar = !openSidebar" class="text-gray-600 hover:text-indigo-600 transition cursor-pointer">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <h1 class="text-sm lg:text-base font-semibold text-gray-700" id="date-time"></h1>
@@ -103,24 +100,19 @@
 
                 <!-- Profile Dropdown -->
                 <div class="relative" @click.away="dropdown = false">
-                    <button @click="dropdown = !dropdown"
-                        class="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition">
+                    <button @click="dropdown = !dropdown" class="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition">
                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
                             <i class="fa-solid fa-user text-indigo-600"></i>
                         </div>
-                        <span
-                            class="hidden md:block text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'User' }}</span>
+                        <span class="hidden md:block text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'User' }}</span>
                         <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
                     </button>
 
-                    <div x-show="dropdown" x-transition
-                        class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg overflow-hidden">
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition">
+                    <div x-show="dropdown" x-transition class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg overflow-hidden">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition">
                             <i class="fa-solid fa-user mr-2"></i> Profil Saya
                         </a>
-                        <button type="button"
-                            class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition logout-btn">
+                        <button type="button" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition logout-btn">
                             <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
                         </button>
                     </div>
@@ -139,10 +131,8 @@
         // Real-time clock
         function updateTime() {
             const now = new Date();
-            const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September',
-                'Oktober', 'November', 'Desember'
-            ];
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             document.getElementById('date-time').innerText =
                 `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
         }
@@ -170,5 +160,4 @@
         });
     </script>
 </body>
-
 </html>

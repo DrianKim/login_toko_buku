@@ -5,15 +5,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\OwnerController;
 
-Route::get('/', [AuthController::class, 'index'])->name('login');
-Route::post('/', [AuthController::class, 'login'])->name('login.post');
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // owner
 Route::middleware(['auth', 'UserAccess:owner'])->group(function () {
-    Route::get('/owner', fn() => view('owner.index'))->name('owner');
+    Route::get('/owner', [OwnerController::class, 'index'])->name('owner');
+
+    Route::get('/owner/data-buku', [OwnerController::class, 'dataBuku'])->name('owner.data-buku');
+
+    Route::get('/owner/users', [OwnerController::class, 'indexUser'])->name('owner.users.index');
+    Route::get('owner/users/create', [OwnerController::class, 'createUser'])->name('owner.users.create');
+    Route::post('owner/users', [OwnerController::class, 'storeUser'])->name('owner.users.store');
+    Route::get('owner/users/edit/{id}', [OwnerController::class, 'editUser'])->name('owner.users.edit');
+    Route::put('owner/users/{id}', [OwnerController::class, 'updateUser'])->name('owner.users.update');
+    Route::delete('owner/users/{id}', [OwnerController::class, 'deleteUser'])->name('owner.users.destroy');
 });
 
 // admin
@@ -49,14 +59,22 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
 Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
     Route::get('/kasir', [KasirController::class, 'dashboard'])->name('kasir');
 
-    Route::get('kasir/data-buku', [KasirController::class, 'indexbuku'])->name('kasir.buku');
+    // Route::get('kasir/data-buku', [KasirController::class, 'indexBuku'])->name('kasir.buku');
 
-    Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
-    Route::post('/kasir/transaksi', [KasirController::class, 'addToCart'])->name('kasir.transaksi.addToCart');
-    Route::post('/kasir/transaksi/update-qty/{buku}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.updateQty');
-    Route::post('/kasir/transaksi/remove/{buku_id}', [KasirController::class, 'removeFromCart'])->name('transaksi.remove');
-    Route::post('/kasir/transaksi/checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
-    Route::get('/kasir/transaksi/struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
+    // Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
+    // Route::post('/kasir/transaksi/addToCart/{id}', [KasirController::class, 'addToCart'])->name('kasir.transaksi.add');
+    // Route::post('/kasir/transaksi/update-qty/{id}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.update');
+    // Route::post('/kasir/transaksi/remove/{id}', [KasirController::class, 'removeFromCart'])->name('transaksi.remove');
+    // Route::get('/kasir/transaksi/checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
+    // Route::get('/kasir/transaksi/struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
+
+    Route::get('/', [KasirController::class, 'indexBuku'])->name('kasir.buku');
+    Route::get('transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
+    Route::post('add/{buku}', [KasirController::class, 'addToCart'])->name('kasir.transaksi.add');
+    Route::delete('remove/{buku}', [KasirController::class, 'removeFromCart'])->name('kasir.transaksi.remove');
+    Route::post('checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
+    Route::get('struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
+    Route::patch('update/{buku}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.update');
 
     Route::get('kasir.riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
 });

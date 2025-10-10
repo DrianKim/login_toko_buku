@@ -4,20 +4,22 @@
     <div class="container mx-auto px-6 py-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800"><i class="fas fa-book text-indigo-600"></i> Data Buku</h1>
+            <h1 class="text-3xl font-bold text-gray-800">
+                <i class="fas fa-book text-indigo-600"></i> Data Buku
+            </h1>
         </div>
 
         <!-- Filter & Search -->
-        <div class="flex flex-wrap items-center justify-between mb-4 gap-3">
-            <form action="#" method="GET" class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-3">
+            <form action="{{ route('kasir.buku') }}" method="GET" class="flex flex-wrap items-center gap-2">
                 <input type="text" id="searchCard" name="q" value="{{ request('q') }}"
                     placeholder="Cari judul / kode..."
                     class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-                <select name="kategori_id" type="submit"
+                <select name="kategori_id"
                     class="cursor-pointer px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="">Semua Kategori</option>
-                    @foreach ($Tbkategori as $group => $items)
+                    @foreach ($kategori as $group => $items)
                         <optgroup label="{{ $group }}">
                             @foreach ($items as $kat)
                                 <option value="{{ $kat->id }}"
@@ -36,92 +38,71 @@
             </form>
 
             <!-- Checkbox tampilkan stok habis -->
-            {{-- <label class="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="toggleStokHabis"
-                    class="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer">
-                <span class="text-gray-700 text-sm">Tampilkan stok habis</span>
+            {{-- <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                <input type="checkbox" id="toggleStokHabis" class="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer">
+                <span class="text-sm">Tampilkan stok habis</span>
             </label> --}}
         </div>
 
         <!-- Grid Buku -->
-        <!-- Grid Buku -->
-        <div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3">
+        <div id="bookGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @php $cart = session('cart', []); @endphp
             @forelse($buku as $item)
                 @php
                     $inCart = isset($cart[$item->id]);
                     $stok = $item->Tbdetail->stok ?? 0;
                 @endphp
-                <div class="book-card bg-white rounded-lg shadow hover:shadow-lg transition p-3 flex flex-col {{ $stok == 0 ? 'stok-habis hidden' : '' }}"
+                <div class="book-card bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col p-4 {{ $stok == 0 ? 'stok-habis hidden' : '' }}"
                     data-title="{{ strtolower($item->judul_buku) }} {{ strtolower($item->kode_buku) }} {{ strtolower($item->Tbkategori->kategori ?? '') }}">
 
-                    <div class="relative w-full mb-3 overflow-hidden rounded-lg" style="padding-top: 120%;">
-                        <img src="{{ asset('storage/' . $item->cover_buku) }}" alt="cover {{ $item->judul_buku }}"
-                            class="absolute inset-0 w-full h-full object-cover object-center {{ $stok == 0 ? 'opacity-50 blur-[2px]' : '' }}">
+                    <!-- Cover -->
+                    <div class="relative w-full mb-4 pt-[150%] rounded-lg overflow-hidden">
+                        <img src="{{ asset('storage/' . $item->cover_buku) }}" alt="{{ $item->judul_buku }}"
+                            class="absolute inset-0 w-full h-full object-cover {{ $stok == 0 ? 'opacity-50 blur-sm' : '' }}">
                         @if ($stok == 0)
-                            <div class="absolute inset-0 flex items-center justify-center bg-black/40">
-                                <span class="bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-lg shadow">Stok
-                                    Habis</span>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="bg-red-500 text-white px-3 py-1 text-xs font-bold rounded-lg shadow">
+                                    Stok Habis
+                                </span>
                             </div>
                         @endif
                     </div>
 
-                    <h3 class="font-bold text-sm text-gray-800 mb-2 line-clamp-2">{{ $item->judul_buku }}</h3>
-
-                    <p class="text-xs text-gray-600 mb-1">
-                        <i class="fas fa-tag text-blue-500 text-xs"></i>
-                        {{ $item->Tbkategori->kategori ?? '-' }}
+                    <!-- Info Buku -->
+                    <h3 class="font-semibold text-lg text-gray-800 mb-1 line-clamp-2">{{ $item->judul_buku }}</h3>
+                    <p class="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                        <i class="fas fa-tag text-blue-500"></i> {{ $item->Tbkategori->kategori ?? '-' }}
+                    </p>
+                    <p class="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                        <i class="fas fa-calendar text-green-500"></i> {{ $item->tahun_terbit }}
+                    </p>
+                    <p class="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                        <i class="fas fa-cubes text-purple-500"></i> Stok: {{ $stok }}
+                    </p>
+                    <p class="text-sm text-gray-600 mb-3 flex items-center gap-1">
+                        <i class="fas fa-dollar-sign text-yellow-500"></i> Harga:
+                        {{ $item->Tbdetail ? 'Rp ' . number_format($item->Tbdetail->harga, 0, ',', '.') : '-' }}
                     </p>
 
-                    <p class="text-xs text-gray-600 mb-1">
-                        <i class="fas fa-calendar text-green-500 text-xs"></i>
-                        {{ $item->tahun_terbit }}
-                    </p>
-
-                    <p class="text-xs text-gray-600 mb-1">
-                        <i class="fas fa-cubes text-purple-500 text-xs"></i>
-                        Stok: {{ $stok }}
-                    </p>
-                    <p class="text-xs text-gray-600 mb-3">
-                        <i class="fas fa-dollar-sign text-yellow-500 text-xs"></i>
-                        Harga: {{ $item->Tbdetail ? 'Rp ' . number_format($item->Tbdetail->harga, 0, ',', '.') : '-' }}
-                    </p>
-
-                    <!-- Tombol Aksi -->
+                    <!-- Aksi -->
                     <div class="mt-auto flex gap-2">
-                        <!-- Detail tetap ada -->
                         <button onclick="showDetail({{ $item->id }})"
-                            class="w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-1.5 rounded-lg shadow transition cursor-pointer text-sm">
-                            <i class="fas fa-eye"></i>
+                            class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 rounded-lg shadow transition flex items-center justify-center gap-2 border border-blue-400 font-semibold">
+                            <i class="fas fa-eye"></i> Lihat
                         </button>
 
                         @if ($stok > 0)
-                            @if (!$inCart)
-                                <form action="{{ route('kasir.transaksi.addToCart', $item->id) }}" method="POST"
-                                    class="w-1/2 add-cart-form">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full bg-green-500 hover:bg-green-600 text-white py-1.5 rounded-lg shadow transition cursor-pointer text-sm">
-                                        <i class="fas fa-cart-plus"></i>
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('kasir.transaksi.updateQty', $item->id) }}" method="POST"
-                                    class="flex w-1/2 border rounded overflow-hidden update-cart-form text-sm"
-                                    data-stok="{{ $stok }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" name="qty" value="{{ $cart[$item->id]['qty'] - 1 }}"
-                                        class="px-2 bg-gray-100 cursor-pointer text-xs">−</button>
-                                    <span class="flex-1 text-center py-1 text-xs">{{ $cart[$item->id]['qty'] }}</span>
-                                    <button type="submit" name="qty" value="{{ $cart[$item->id]['qty'] + 1 }}"
-                                        class="px-2 bg-gray-100 cursor-pointer btn-plus text-xs">+</button>
-                                </form>
-                            @endif
+                            <form action="{{ route('kasir.transaksi.add', $item->id) }}" method="POST" class="flex-1">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 rounded-lg shadow transition flex items-center justify-center gap-2 border border-blue-400 font-semibold">
+                                    <i class="fas fa-cart-plus"></i> Keranjang
+                                </button>
+                            </form>
                         @else
                             <button disabled
-                                class="w-1/2 bg-gray-400 text-white py-1.5 rounded-lg shadow cursor-not-allowed text-sm">
-                                <i class="fas fa-ban"></i>
+                                class="flex-1 bg-gray-100 text-blue-400 py-2 rounded-lg shadow cursor-not-allowed flex items-center justify-center gap-2 border border-blue-200 font-semibold">
+                                <i class="fas fa-ban"></i> Tidak Tersedia
                             </button>
                         @endif
                     </div>
@@ -131,7 +112,7 @@
             @endforelse
         </div>
 
-        <!-- Checkout Button (Sticky) -->
+        <!-- Checkout Button -->
         <div id="checkoutButton" class="hidden fixed bottom-6 right-6 z-50">
             <a href="{{ route('kasir.transaksi') }}"
                 class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2">

@@ -14,12 +14,18 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $data = [
+            'jumlahBuku' => DataBuku::count(),
+            'jumlahUser' => User::whereIn('role', ['admin', 'kasir'])->count(),
+            'jumlahKategori' => KategoriBuku::count(),
+            'bukuTerbaru' => DataBuku::with(['Tbkategori', 'Tbdetail'])->latest()->take(5)->get(),
+        ];
+        return view('admin.dashboard', $data);
     }
     public function dataBuku()
     {
         $data = [
-            'data_buku' => DataBuku::with(['Tbkategori', 'Tbdetail'])->get(),
+            'data_buku' => DataBuku::with(['Tbkategori', 'Tbdetail'])->paginate(10),
         ];
 
         return view('admin.buku.index', $data);
@@ -172,7 +178,7 @@ class AdminController extends Controller
     public function kategoriBuku()
     {
         $data = [
-            'kategori_buku' => KategoriBuku::all(),
+            'kategori_buku' => KategoriBuku::paginate(2),
         ];
         return view('admin.kategori.index', $data);
     }
@@ -271,7 +277,7 @@ class AdminController extends Controller
     public function indexUser()
     {
         $data = [
-            'users' => User::all(),
+            'users' => User::where('role', 'kasir')->paginate(10),
         ];
         return view('admin.users.index', $data);
     }

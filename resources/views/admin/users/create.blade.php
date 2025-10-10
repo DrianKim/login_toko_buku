@@ -67,9 +67,9 @@
                         class="w-full border border-blue-200 rounded-lg px-3 py-2 bg-white text-gray-800
                         focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required>
-                        <option value="" hidden>Pilih role...</option>
-                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
+                        {{-- <option value="" hidden>Pilih role...</option> --}}
+                        {{-- <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option> --}}
+                        <option selected value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
                     </select>
                 </div>
 

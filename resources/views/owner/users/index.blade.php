@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('owner.layouts.app')
 
 {{-- Notif SweetAlert --}}
 @if (session('success'))
@@ -31,7 +31,7 @@
     <div class="max-w-6xl mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-blue-700">Data User</h1>
-            <a href="{{ route('admin.users.create') }}"
+            <a href="{{ route('owner.users.create') }}"
                 class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition font-medium flex items-center gap-2">
                 <i class="fas fa-plus"></i> Tambah User
             </a>
@@ -58,17 +58,25 @@
                                 <td class="px-6 py-3 font-medium">{{ $user->name }}</td>
                                 <td class="px-6 py-3">{{ $user->email }}</td>
                                 <td class="px-6 py-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-600">
-                                        Kasir
+                                    <span
+                                        class="px-3 py-1 rounded-full text-xs font-semibold
+                                        {{ $user->role == 'owner'
+                                            ? 'bg-purple-100 text-purple-600'
+                                            : ($user->role == 'admin'
+                                                ? 'bg-red-100 text-red-600'
+                                                : ($user->role == 'kasir'
+                                                    ? 'bg-green-100 text-green-600'
+                                                    : 'bg-gray-100 text-gray-600')) }}">
+                                        {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-3 text-center flex justify-center gap-3">
-                                    <a href="{{ route('admin.users.edit', $user->id) }}"
+                                    <a href="{{ route('owner.users.edit', $user->id) }}"
                                         class="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                    <form action="{{ route('owner.users.destroy', $user->id) }}" method="POST"
                                         onsubmit="return confirmDelete(event, '{{ $user->name }}')">
                                         @csrf
                                         @method('DELETE')

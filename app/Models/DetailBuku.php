@@ -8,13 +8,13 @@ class DetailBuku extends Model
 {
     protected $table = 'detail_buku';
     protected $fillable = [
-        'id_buku',
+        'buku_id',
         'stok',
         'harga'
     ];
 
     public function buku()
     {
-        return $this->belongsTo(DataBuku::class, 'id_buku');
+        return $this->belongsTo(DataBuku::class, 'buku_id');
     }
 }

@@ -1,106 +1,137 @@
 @extends('kasir.layouts.app')
 
 @section('content')
-    <div class="max-w-6xl mx-auto px-6 py-10">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-blue-700"><i class="fas fa-cart-shopping"></i> Keranjang Belanja</h1>
-            <a href="#"
-                class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition font-medium flex items-center gap-2">
-                <i class="fas fa-plus"></i> Tambah Buku
-            </a>
-        </div>
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-cart-shopping text-indigo-600"></i> Keranjang Belanja
+        </h1>
 
         @if (empty($cart))
             <div class="p-6 bg-blue-100 text-blue-600 rounded-lg">
                 Keranjang masih kosong. Silakan tambahkan buku dari data buku.
             </div>
         @else
-            <div class="bg-white shadow-lg rounded-2xl border border-blue-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-left text-gray-700">
-                        <thead class="bg-blue-100 text-blue-800 uppercase text-xs font-semibold">
-                            <tr>
-                                <th class="px-6 py-3 text-center">#</th>
-                                <th class="px-6 py-3">Judul Buku</th>
-                                <th class="px-6 py-3 text-center">Harga</th>
-                                <th class="px-6 py-3 text-center">Qty</th>
-                                <th class="px-6 py-3 text-center">Subtotal</th>
-                                <th class="px-6 py-3 text-center"><i class="fas fa-cog"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php $total = 0; @endphp
-                            @foreach ($cart as $id => $item)
-                                @php
-                                    $subtotal = $item['qty'] * $item['harga'];
-                                    $total += $subtotal;
-                                @endphp
-                                <tr class="border-b hover:bg-blue-50 transition">
-                                    <td class="px-6 py-3 text-center">{{ $loop->iteration }}</td>
-                                    <td class="px-6 py-3 flex items-center gap-3">
-                                        <img src="{{ isset($item['cover_buku']) && $item['cover_buku'] ? asset('storage/' . $item['cover_buku']) : 'https://via.placeholder.com/50x70' }}"
-                                            alt="{{ $item['judul_buku'] }}" class="w-12 h-16 object-cover rounded">
-                                        <span>{{ $item['judul_buku'] }}</span>
-                                    </td>
-                                    <td class="px-6 py-3 text-center">Rp {{ number_format($item['harga'], 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-6 py-3 text-center">
-                                        <form action="{{ route('kasir.transaksi.update', $id) }}" method="POST"
-                                            class="flex items-center justify-center update-cart-form"
-                                            data-stok="{{ $item['stok'] }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="button"
-                                                class="px-3 cursor-pointer btn-minus rounded bg-gray-200 hover:bg-gray-300">−</button>
-                                            <span class="px-3 qty-text">{{ $item['qty'] }}</span>
-                                            <button type="button"
-                                                class="px-3 cursor-pointer btn-plus rounded bg-gray-200 hover:bg-gray-300">+</button>
-                                            <input type="hidden" name="qty" value="{{ $item['qty'] }}">
-                                        </form>
-                                    </td>
-                                    <td class="px-6 py-3 text-center">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
-                                    <td class="px-6 py-3 text-center flex justify-center gap-2">
-                                        <form id="remove-{{ $id }}"
-                                            action="{{ route('kasir.transaksi.remove', $id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- ✅ Daftar Item -->
+                <div class="lg:col-span-2 space-y-4">
+                    @php $total = 0; @endphp
+                    @foreach ($cart as $id => $item)
+                        @php
+                            $subtotal = $item['qty'] * $item['harga'];
+                            $total += $subtotal;
+                        @endphp
+
+                        <div class="flex items-start bg-white shadow rounded-lg p-4 border">
+                            <!-- Thumbnail Buku -->
+                            <img src="{{ isset($item['cover_buku']) && $item['cover_buku']
+                                ? asset('storage/' . $item['cover_buku'])
+                                : 'https://via.placeholder.com/80x100' }}"
+                                alt="{{ $item['judul_buku'] }}" class="w-20 h-28 object-cover rounded">
+
+                            <!-- Info Buku -->
+                            <div class="flex-1 ml-4">
+                                <h3 class="font-semibold text-gray-800">{{ $item['judul_buku'] }}</h3>
+                                <p class="text-sm text-gray-500">Soft Cover</p>
+
+                                <div class="mt-2">
+                                    <span class="text-lg font-bold text-gray-900">
+                                        Rp {{ number_format($item['harga'], 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Aksi -->
+                            <div class="flex flex-col items-center ml-4">
+                                <button type="button"
+                                    onclick="event.preventDefault(); document.getElementById('remove-{{ $id }}').submit();"
+                                    class="text-gray-400 hover:text-red-500 cursor-pointer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+
+                                <div class="flex items-center mt-8 border rounded">
+                                    <form action="{{ route('kasir.transaksi.update', $id) }}" method="POST"
+                                        class="flex items-center update-cart-form" data-stok="{{ $item['stok'] }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="button" class="px-3 cursor-pointer btn-minus">−</button>
+                                        <span class="px-3 qty-text">{{ $item['qty'] }}</span>
+                                        <button type="button" class="px-3 cursor-pointer btn-plus">+</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
-                {{-- Ringkasan --}}
-                <div class="p-6 border-t border-blue-100 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="text-lg font-semibold text-gray-800">
-                        Total: Rp {{ number_format($total, 0, ',', '.') }}
+                <!-- ✅ Ringkasan Belanja -->
+                <div class="bg-white shadow rounded-lg p-6 h-fit">
+                    <h2 class="text-lg font-semibold mb-4">Ringkasan Keranjang</h2>
+
+                    <div class="flex justify-between text-sm mb-2">
+                        <span>Total Harga ({{ count($cart) }} Barang)</span>
+                        <span id="total-harga">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
+                    <div class="flex justify-between text-sm text-red-600 mb-2">
+                        <span>Diskon Belanja</span>
+                        <span id="diskon-text">-Rp0</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Subtotal</span>
+                        <span id="subtotal-text">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+
+                    <!-- ✅ Form Checkout -->
                     <form id="checkout-form" action="{{ route('kasir.transaksi.checkout') }}" method="POST"
-                        class="flex flex-col md:flex-row gap-3 items-center w-full md:w-auto">
+                        class="mt-4 space-y-3">
                         @csrf
-                        <input type="text" name="diskon" placeholder="Diskon"
-                            class="border px-3 py-2 rounded focus:ring focus:ring-indigo-500">
-                        <input type="text" name="dibayar" placeholder="Dibayar"
-                            class="border px-3 py-2 rounded focus:ring focus:ring-indigo-500">
-                        <select name="metode_bayar" class="border px-3 py-2 rounded focus:ring focus:ring-indigo-500">
+                        <input type="hidden" name="total" value="{{ $total }}" id="total-input">
+
+                        <!-- Diskon -->
+                        <input type="text" name="diskon" id="diskon"
+                            class="w-full border px-3 py-2 rounded focus:ring focus:ring-indigo-500"
+                            placeholder="Masukkan Diskon">
+
+                        <!-- Dibayar -->
+                        <div id="dibayar-wrapper">
+                            <input type="text" name="dibayar" id="dibayar" required
+                                class="w-full border px-3 py-2 rounded focus:ring focus:ring-indigo-500"
+                                placeholder="Nominal Dibayar">
+                        </div>
+
+                        <!-- Metode Bayar -->
+                        <select name="metode_bayar" id="metode_bayar"
+                            class="cursor-pointer w-full border px-3 py-2 rounded focus:ring focus:ring-indigo-500">
                             <option value="cash">Cash</option>
                             <option value="debit">Cashless</option>
                         </select>
-                        <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md font-semibold">
+
+                        <button id="btn-bayar" type="button"
+                            class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
                             Bayar Sekarang
+                        </button>
+
+                        <button id="btn-batal" type="button"
+                            class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer">
+                            Batalkan Pembayaran
                         </button>
                     </form>
                 </div>
             </div>
+
+            <!-- Hidden form hapus item -->
+            @foreach ($cart as $id => $item)
+                <form id="remove-{{ $id }}" action="{{ route('kasir.transaksi.remove', $id) }}" method="POST"
+                    style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            @endforeach
         @endif
     </div>
+
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
 
     <script>
         const totalHarga = {{ $total ?? 0 }};

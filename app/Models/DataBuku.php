@@ -24,6 +24,6 @@ class DataBuku extends Model
 
     public function Tbdetail()
     {
-        return $this->hasOne(DetailBuku::class, 'id_buku');
+        return $this->hasOne(DetailBuku::class, 'buku_id');
     }
 }

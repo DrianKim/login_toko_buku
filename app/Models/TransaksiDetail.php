@@ -16,6 +16,11 @@ class TransaksiDetail extends Model
         'subtotal',
     ];
 
+    public function buku()
+    {
+        return $this->belongsTo(DataBuku::class, 'buku_id');
+    }
+
     public function transaksi()
     {
         return $this->belongsTo(Transaksi::class, 'transaksi_id');

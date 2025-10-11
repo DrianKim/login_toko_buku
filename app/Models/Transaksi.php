@@ -23,11 +23,12 @@ class Transaksi extends Model
         return $this->belongsTo(User::class, 'kasir_id');
     }
 
+
     public function details()
     {
         return $this->hasMany(TransaksiDetail::class, 'transaksi_id');
     }
-    
+
     public function buku()
     {
         return $this->belongsTo(DataBuku::class, 'buku_id');

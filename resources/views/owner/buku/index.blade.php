@@ -59,7 +59,7 @@
                             <td class="px-6 py-3 text-center flex justify-center gap-3">
 
                                 {{-- Tombol Show --}}
-                                @include('owner.modal.show_buku', ['buku' => $buku])
+                                @include('modal.show_buku', ['buku' => $buku])
                                 <button type="button"
                                     class="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1"
                                     data-modal-target="showBukuModal{{ $buku->id }}">

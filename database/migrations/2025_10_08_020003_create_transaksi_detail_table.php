@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transaksi_detail', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaksi_id')->constrained('transaksi')->onDelete('cascade');
-            $table->foreignId('buku_id')->constrained('buku')->onDelete('cascade');
+            $table->foreignId('buku_id')->constrained('data_buku')->onDelete('cascade');
             $table->integer('qty');
             $table->decimal('harga_satuan', 12, 2);
             $table->decimal('subtotal', 12, 2);

@@ -67,19 +67,19 @@ Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
     // Route::get('kasir/data-buku', [KasirController::class, 'indexBuku'])->name('kasir.buku');
 
     // Route::get('kasir/transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
-    // Route::post('/kasir/transaksi/addToCart/{id}', [KasirController::class, 'addToCart'])->name('kasir.transaksi.add');
+    // Route::post('/kasir/transaksi/addTokeranjang/{id}', [KasirController::class, 'addTokeranjang'])->name('kasir.transaksi.add');
     // Route::post('/kasir/transaksi/update-qty/{id}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.update');
-    // Route::post('/kasir/transaksi/remove/{id}', [KasirController::class, 'removeFromCart'])->name('transaksi.remove');
+    // Route::post('/kasir/transaksi/remove/{id}', [KasirController::class, 'removeFromkeranjang'])->name('transaksi.remove');
     // Route::get('/kasir/transaksi/checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
     // Route::get('/kasir/transaksi/struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
 
-    Route::get('/', [KasirController::class, 'indexBuku'])->name('kasir.buku');
-    Route::get('transaksi', [KasirController::class, 'indexTransaksi'])->name('kasir.transaksi');
-    Route::post('add/{buku}', [KasirController::class, 'addToCart'])->name('kasir.transaksi.add');
-    Route::delete('remove/{buku}', [KasirController::class, 'removeFromCart'])->name('kasir.transaksi.remove');
-    Route::post('checkout', [KasirController::class, 'checkout'])->name('kasir.transaksi.checkout');
-    Route::get('struk/{id}', [KasirController::class, 'struk'])->name('kasir.transaksi.struk');
-    Route::patch('update/{buku}', [KasirController::class, 'updateQty'])->name('kasir.transaksi.update');
+    Route::get('/kasir/keranjang', [KasirController::class, 'index'])->name('kasir.buku');
+    Route::post('/kasir/keranjang/tambah', [KasirController::class, 'tambahKeranjang'])->name('kasir.keranjang.tambah');
+    Route::post('/kasir/keranjang/update', [KasirController::class, 'updateKeranjang'])->name('kasir.keranjang.update');
+    Route::post('/kasir/keranjang/hapus', [KasirController::class, 'hapusKeranjang'])->name('kasir.keranjang.hapus');
+    Route::get('/kasir/keranjang/get', [KasirController::class, 'getkeranjang'])->name('kasir.keranjang.get');
+    Route::post('/kasir/checkout', [KasirController::class, 'checkout'])->name('kasir.checkout');
+    Route::get('/kasir/struk/{id}', [KasirController::class, 'struk'])->name('kasir.struk');
 
-    Route::get('kasir.riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
+    Route::get('kasir/riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
 });

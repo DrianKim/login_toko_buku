@@ -31,10 +31,10 @@
     <div class="max-w-6xl mx-auto px-6 py-10">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-blue-700">Data User</h1>
-            <a href="{{ route('owner.users.create') }}"
+            {{-- <a href="{{ route('owner.users.create') }}"
                 class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition font-medium flex items-center gap-2">
                 <i class="fas fa-plus"></i> Tambah User
-            </a>
+            </a> --}}
         </div>
 
         <div class="bg-white shadow-lg rounded-2xl border border-blue-100 overflow-hidden">
@@ -46,9 +46,9 @@
                             <th class="px-6 py-3">Nama</th>
                             <th class="px-6 py-3">Email</th>
                             <th class="px-6 py-3">Role</th>
-                            <th class="px-6 py-3 text-center">
+                            {{-- <th class="px-6 py-3 text-center">
                                 <i class="fas fa-cog"></i>
-                            </th>
+                            </th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -70,7 +70,7 @@
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-3 text-center flex justify-center gap-3">
+                                {{-- <td class="px-6 py-3 text-center flex justify-center gap-3">
                                     <a href="{{ route('owner.users.edit', $user->id) }}"
                                         class="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
                                         <i class="fas fa-edit"></i>
@@ -85,7 +85,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
-                                </td>
+                                </td> --}}
                             </tr>
                         @empty
                             <tr>

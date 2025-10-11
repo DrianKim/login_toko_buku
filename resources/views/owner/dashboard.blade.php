@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold mb-6 text-blue-700">Owner Dashboard</h1>
 
         {{-- Ringkasan Statistik --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white shadow p-6 rounded-xl flex flex-col items-center">
                 <div class="bg-blue-100 text-blue-600 rounded-full w-12 h-12 flex items-center justify-center mb-2">
                     <i class="fas fa-cash-register text-xl"></i>

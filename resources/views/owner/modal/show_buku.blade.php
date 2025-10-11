@@ -1,5 +1,5 @@
 <div id="showBukuModal{{ $buku->id }}"
-    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-white/20 backdrop-blur-sm backdrop-saturate-150 transition-all">
 
     <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden relative animate-fadeIn">
         <!-- Header -->

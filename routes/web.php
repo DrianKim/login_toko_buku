@@ -45,7 +45,12 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
     Route::delete('admin/kategori-buku/{id}', [AdminController::class, 'deleteKategoriBuku'])->name('admin.kategori.destroy');
 
     Route::get('admin/detail-buku', [AdminController::class, 'detailBuku'])->name('admin.detail-buku');
+    Route::get('admin/detail-buku/create', [AdminController::class, 'createDetailBuku'])->name('admin.detail-buku.create');
     Route::post('admin/detail-buku', [AdminController::class, 'storeDetailBuku'])->name('admin.detail-buku.store');
+
+    Route::post('/admin/detail/{id}/tambah-stok', [AdminController::class, 'tambahStok'])->name('admin.detail-buku.tambah-stok');
+    Route::put('/admin/detail/{id}/update-harga', [AdminController::class, 'updateHarga'])->name('admin.detail-buku.update-harga');
+
 
     Route::get('admin/users', [AdminController::class, 'indexUser'])->name('admin.users.index');
     Route::get('admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');

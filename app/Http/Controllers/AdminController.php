@@ -241,37 +241,110 @@ class AdminController extends Controller
     public function detailBuku()
     {
         $data = [
-            'detail_buku' => DetailBuku::with('buku')->get(),
+            'detail_buku' => DetailBuku::with('buku')->orderBy('id', 'desc')->paginate(10),
             'buku' => DataBuku::all(),
         ];
+
         return view('admin.detail.index', $data);
+    }
+
+    public function createDetailBuku()
+    {
+        $data = [
+            'buku' => DataBuku::doesntHave('Tbdetail')->get(),
+        ];
+
+        return view('admin.detail.create', $data);
     }
 
     public function storeDetailBuku(Request $request)
     {
         $request->validate([
-            'id_buku' => 'required|exists:data_buku,id',
+            'buku_id' => 'required|exists:data_buku,id|unique:detail_buku,buku_id',
             'stok' => 'required|numeric|min:0',
             'harga' => 'required|numeric|min:0',
         ]);
 
-        $detail = DetailBuku::where('id_buku', $request->id_buku)->first();
+        DetailBuku::create([
+            'buku_id' => $request->buku_id,
+            'stok' => $request->stok,
+            'harga' => $request->harga,
+        ]);
+
+        return redirect()->route('admin.detail-buku')->with('success', 'Stok & harga berhasil ditambahkan!');
+    }
+
+    // public function storeDetailBuku(Request $request)
+    // {
+    //     $request->validate([
+    //         'id_buku' => 'required|exists:data_buku,id',
+    //         'stok' => 'required|numeric|min:0',
+    //         'harga' => 'required|numeric|min:0',
+    //     ]);
+
+    //     $detail = DetailBuku::where('id_buku', $request->id_buku)->first();
+
+    //     if ($detail) {
+    //         $detail->stok = $detail->stok + $request->stok;
+    //         $detail->harga = $request->harga;
+    //         $detail->save();
+
+    //         return redirect()->route('admin.detail-buku')->with('success', 'Stok buku berhasil diperbarui!');
+    //     } else {
+    //         DetailBuku::create([
+    //             'id_buku' => $request->id_buku,
+    //             'stok' => $request->stok,
+    //             'harga' => $request->harga,
+    //         ]);
+
+    //         return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan!');
+    //     }
+    // }
+
+    public function tambahStok(Request $request, $id)
+    {
+        $request->validate([
+            'stok_baru' => 'required|integer|min:1',
+        ]);
+
+        $buku = DataBuku::findOrFail($id);
+        $detail = $buku->Tbdetail;
 
         if ($detail) {
-            $detail->stok = $detail->stok + $request->stok;
-            $detail->harga = $request->harga;
+            $detail->stok += $request->stok_baru;
             $detail->save();
-
-            return redirect()->route('admin.detail-buku')->with('success', 'Stok buku berhasil diperbarui!');
         } else {
             DetailBuku::create([
-                'id_buku' => $request->id_buku,
-                'stok' => $request->stok,
-                'harga' => $request->harga,
+                'buku_id' => $buku->id,
+                'stok' => $request->stok_baru,
+                'harga' => 0,
             ]);
-
-            return redirect()->route('admin.detail-buku')->with('success', 'Detail buku berhasil ditambahkan!');
         }
+
+        return redirect()->back()->with('success', 'Stok buku berhasil ditambahkan!');
+    }
+
+    // Update harga buku
+    public function updateHarga(Request $request, $id)
+    {
+        $request->validate([
+            'harga_baru' => 'required|integer|min:0',
+        ]);
+
+        $buku = DataBuku::findOrFail($id);
+        $detail = $buku->Tbdetail;
+
+        if ($detail) {
+            $detail->update(['harga' => $request->harga_baru]);
+        } else {
+            DetailBuku::create([
+                'buku_id' => $buku->id,
+                'stok' => 0,
+                'harga' => $request->harga_baru,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Harga buku berhasil diperbarui!');
     }
 
     public function indexUser()

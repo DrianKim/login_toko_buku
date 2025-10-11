@@ -27,8 +27,9 @@ class OwnerController extends Controller
         // Chart Bulanan (placeholder)
         $salesLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $salesData = [];
-        foreach ($salesLabels as $i) {
-            $salesData[] = Transaksi::whereMonth('created_at', $i)->sum('total_harga');
+
+        foreach (range(1, 12) as $monthNumber) {
+            $salesData[] = Transaksi::whereMonth('created_at', $monthNumber)->sum('total_harga');
         }
 
         return view('owner.dashboard', compact(
@@ -41,7 +42,6 @@ class OwnerController extends Controller
             'salesData'
         ));
     }
-
 
     public function dataBuku()
     {

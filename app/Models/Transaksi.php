@@ -20,9 +20,8 @@ class Transaksi extends Model
 
     public function kasir()
     {
-        return $this->belongsTo(User::class, 'kasir_id');
+        return $this->belongsTo(User::class);
     }
-
 
     public function details()
     {

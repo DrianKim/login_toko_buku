@@ -61,6 +61,9 @@
             <a href="{{ route('owner.users.index') }}" class="nav-link {{ request()->routeIs('owner.users.*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
                 <i class="fa-solid fa-users"></i> User Management
             </a>
+            <a href="{{ route('owner.laporan') }}" class="nav-link {{ request()->routeIs('owner.laporan*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Laporan
+            </a>
         </nav>
 
         <!-- Logout -->

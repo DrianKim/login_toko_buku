@@ -46,10 +46,17 @@
                 </a>
 
                 {{-- Riwayat Transaksi --}}
+                <a href="{{ route('kasir.riwayat.transaksi') }}"
+                    class="flex items-center px-3 py-2 rounded-lg transition
+                        {{ request()->routeIs('kasir.riwayat.transaksi*') ? 'text-blue-600 font-semibold bg-indigo-50' : 'hover:bg-indigo-50 hover:text-indigo-600' }}">
+                    <i class="fa-solid fa-clock-rotate-left mr-3"></i> Riwayat Transaksi
+                </a>
+
+                {{-- Riwayat Kasir --}}
                 <a href="{{ route('kasir.riwayat') }}"
                     class="flex items-center px-3 py-2 rounded-lg transition
                         {{ request()->routeIs('kasir.riwayat*') ? 'text-blue-600 font-semibold bg-indigo-50' : 'hover:bg-indigo-50 hover:text-indigo-600' }}">
-                    <i class="fa-solid fa-clock-rotate-left mr-3"></i> Riwayat Transaksi
+                    <i class="fa-solid fa-clock-rotate-left mr-3"></i> Riwayat 
                 </a>
             </nav>
 

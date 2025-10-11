@@ -24,6 +24,10 @@ Route::middleware(['auth', 'UserAccess:owner'])->group(function () {
     Route::get('owner/users/edit/{id}', [OwnerController::class, 'editUser'])->name('owner.users.edit');
     Route::put('owner/users/{id}', [OwnerController::class, 'updateUser'])->name('owner.users.update');
     Route::delete('owner/users/{id}', [OwnerController::class, 'deleteUser'])->name('owner.users.destroy');
+
+    Route::get('owner/laporan', [OwnerController::class, 'laporan'])->name('owner.laporan');
+
+    Route::get('owner/struk/{id}', [OwnerController::class, 'struk'])->name('owner.struk');
 });
 
 // admin
@@ -51,13 +55,16 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
     Route::post('/admin/detail/{id}/tambah-stok', [AdminController::class, 'tambahStok'])->name('admin.detail-buku.tambah-stok');
     Route::put('/admin/detail/{id}/update-harga', [AdminController::class, 'updateHarga'])->name('admin.detail-buku.update-harga');
 
-
     Route::get('admin/users', [AdminController::class, 'indexUser'])->name('admin.users.index');
     Route::get('admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
     Route::post('admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::get('admin/users/edit/{id}', [AdminController::class, 'editUser'])->name('admin.users.edit');
     Route::put('admin/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('admin/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.destroy');
+
+    Route::get('admin/laporan', [AdminController::class, 'laporan'])->name('admin.laporan');
+
+    Route::get('admin/struk/{id}', [AdminController::class, 'struk'])->name('admin.struk');
 });
 
 // kasir
@@ -81,5 +88,7 @@ Route::middleware(['auth', 'UserAccess:kasir'])->group(function () {
     Route::post('/kasir/checkout', [KasirController::class, 'checkout'])->name('kasir.checkout');
     Route::get('/kasir/struk/{id}', [KasirController::class, 'struk'])->name('kasir.struk');
 
-    Route::get('kasir/riwayat', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat');
+    Route::get('kasir/riwayat/transaksi', [KasirController::class, 'riwayatTransaksi'])->name('kasir.riwayat.transaksi');
+
+    Route::get('kasir/riwayat', [KasirController::class, 'riwayatKasir'])->name('kasir.riwayat');
 });

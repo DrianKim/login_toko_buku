@@ -24,6 +24,11 @@ class User extends Authenticatable
         'role',
     ];
 
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'kasir_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

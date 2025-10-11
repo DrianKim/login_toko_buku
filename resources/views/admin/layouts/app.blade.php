@@ -66,8 +66,12 @@
                 <i class="fa-solid fa-book-open"></i> Detail Buku
             </a>
             <a href="{{ route('admin.users.index') }}"
-                class="nav-link {{ request()->routeIs('admin.users.*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+                class="nav-link {{ request()->routeIs('admin.users.index*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
                 <i class="fa-solid fa-users"></i> User Management
+            </a>
+            <a href="{{ route('admin.laporan') }}"
+                class="nav-link {{ request()->routeIs('admin.laporan*') ? 'active text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50' }} flex items-center gap-3 px-3 py-2.5 rounded-lg transition">
+                <i class="fa-solid fa-file-invoice-dollar"></i> Laporan
             </a>
         </nav>
 

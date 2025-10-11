@@ -1,4 +1,4 @@
-@extends('kasir.layouts.app')
+@extends('admin.layouts.app')
 
 @section('content')
     <div class="flex justify-center py-6 bg-gray-100 min-h-screen">
@@ -13,8 +13,7 @@
 
             <!-- Info Transaksi -->
             <div class="border-b border-dashed pb-2 mb-2">
-                <p>ID Transaksi: <span class="font-semibold">{{ $transaksi->kode ?? '#TRX-' . now()->timestamp }}</span>
-                </p>
+                <p>ID Transaksi: <span class="font-semibold">{{ $transaksi->kode ?? '#TRX-' . now()->timestamp }}</span></p>
                 <p>Tanggal: <span>{{ $transaksi->tanggal ?? now()->format('d/m/Y H:i') }}</span></p>
                 <p>Kasir: <span>{{ $transaksi->kasir->name ?? Auth::user()->name }}</span></p>
             </div>

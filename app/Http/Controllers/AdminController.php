@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\DataBuku;
+use App\Models\Transaksi;
 use App\Models\DetailBuku;
 use App\Models\KategoriBuku;
 use Illuminate\Http\Request;
+use App\Exports\LaporanExport;
 use ReflectionFunctionAbstract;
 use PhpParser\Node\Scalar\DNumber;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -431,5 +435,48 @@ class AdminController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    public function struk($id)
+    {
+        $transaksi = Transaksi::with(['kasir', 'details.buku'])->findOrFail($id);
+        return view('admin.struk', compact('transaksi'));
+    }
+
+    public function laporan(Request $request)
+    {
+        $start = $request->start_date ?? now()->startOfMonth()->toDateString();
+        $end = $request->end_date ?? now()->toDateString();
+        $kasirId = $request->kasir_id ?? null;
+
+        if ($request->has('export')) {
+            $filename = 'laporan_' . Carbon::now()->format('Ymd_His') . '.xlsx';
+            return Excel::download(new LaporanExport($start, $end, $kasirId), $filename);
+        }
+
+        $transaksiQuery = Transaksi::with(['kasir', 'details.buku'])
+            ->whereDate('created_at', '>=', $start)
+            ->whereDate('created_at', '<=', $end);
+
+        if ($kasirId) $transaksiQuery->where('kasir_id', $kasirId);
+
+        $transaksi = $transaksiQuery->orderBy('created_at', 'desc')->get();
+
+        $totalTransaksi = $transaksi->count();
+        $totalPenjualan = $transaksi->sum(fn($t) => $t->details->sum(fn($d) => $d->qty * $d->harga_satuan));
+        $barangTerjual = $transaksi->sum(fn($t) => $t->details->sum('qty'));
+
+        $kasirList = User::where('role', 'kasir')->get();
+
+        return view('admin.laporan.index', compact(
+            'transaksi',
+            'totalTransaksi',
+            'totalPenjualan',
+            'barangTerjual',
+            'kasirList',
+            'start',
+            'end',
+            'kasirId'
+        ));
     }
 }

@@ -7,15 +7,16 @@
 
         {{-- Filter Laporan --}}
         <div class="bg-white rounded-xl shadow p-6 mb-8">
-            <form class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" method="GET" action="{{ route('admin.laporan') }}">
+            <form id="filterForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" method="GET"
+                action="{{ route('owner.laporan') }}">
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tanggal Mulai</label>
-                    <input type="date" name="start_date" value="{{ $start }}"
+                    <input type="date" name="start_date" id="start_date" value="{{ $start }}"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm sm:text-sm">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Tanggal Selesai</label>
-                    <input type="date" name="end_date" value="{{ $end }}"
+                    <input type="date" name="end_date" id="end_date" value="{{ $end }}"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm sm:text-sm">
                 </div>
                 <div>
@@ -24,8 +25,7 @@
                         <option value="">Semua Kasir</option>
                         @foreach ($kasirList as $k)
                             <option value="{{ $k->id }}" {{ $kasirId == $k->id ? 'selected' : '' }}>
-                                {{ $k->name }}
-                            </option>
+                                {{ $k->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -125,6 +125,17 @@
                 Cetak Laporan
             </button>
         </div>
-
+        
     </div>
+
+    <script>
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            const start = new Date(document.getElementById('start_date').value);
+            const end = new Date(document.getElementById('end_date').value);
+            if (start > end) {
+                e.preventDefault();
+                alert('Tanggal mulai tidak boleh lebih besar dari tanggal selesai!');
+            }
+        });
+    </script>
 @endsection

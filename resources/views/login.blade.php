@@ -86,6 +86,38 @@
                     </div>
                 </div>
 
+                {{-- Error Messages --}}
+                @if ($errors->any())
+                    <div id="errorAlert"
+                        class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-5 text-sm flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <div>
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Session Error --}}
+                @if (session('error'))
+                    <div id="errorAlert"
+                        class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-5 text-sm flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                {{-- Session Success --}}
+                @if (session('success'))
+                    <div id="successAlert"
+                        class="bg-green-50 border-l-4 border-green-500 text-green-700 p-3 rounded-lg mb-5 text-sm flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                @endif
+
+
                 {{-- Login Form --}}
                 <form id="loginForm" method="POST" action="{{ route('login.post') }}" class="space-y-5">
                     @csrf

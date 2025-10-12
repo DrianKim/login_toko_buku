@@ -148,6 +148,10 @@ class OwnerController extends Controller
         $end = $request->end_date ?? now()->toDateString();
         $kasirId = $request->kasir_id ?? null;
 
+        if (strtotime($start) > strtotime($end)) {
+            return redirect()->back()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
+        }
+
         if ($request->has('export')) {
             $filename = 'laporan_' . Carbon::now()->format('Ymd_His') . '.xlsx';
             return Excel::download(new LaporanExport($start, $end, $kasirId), $filename);

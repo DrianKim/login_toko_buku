@@ -285,6 +285,7 @@ class KasirController extends Controller
         $end = $request->end_date ?? now()->toDateString();
 
         $kasirData = Transaksi::select(
+            'transaksi.created_at', 
             DB::raw('DATE(transaksi.created_at) as tanggal'),
             DB::raw('COUNT(transaksi.id) as total_transaksi'),
             DB::raw('SUM(transaksi_detail.qty) as total_item'),
@@ -294,8 +295,8 @@ class KasirController extends Controller
             ->where('kasir_id', auth()->id())
             ->whereDate('transaksi.created_at', '>=', $start)
             ->whereDate('transaksi.created_at', '<=', $end)
-            ->groupBy(DB::raw('DATE(transaksi.created_at)'))
-            ->orderBy('tanggal', 'desc')
+            ->groupBy(DB::raw('DATE(transaksi.created_at)'), 'transaksi.created_at')
+            ->orderBy('transaksi.created_at', 'desc')
             ->get();
 
         return view('kasir.riwayat.index', compact('kasirData', 'start', 'end'));

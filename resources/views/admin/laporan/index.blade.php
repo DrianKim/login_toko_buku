@@ -99,7 +99,11 @@
                                     <td class="px-6 py-3 text-center">Rp {{ number_format($d->harga_satuan, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-3 text-center">Rp
-                                        {{ number_format($d->qty * $d->harga_satuan, 0, ',', '.') }}</td>
+                                        {{ number_format($d->qty * $d->harga_satuan, 0, ',', '.') }}
+                                    </td>
+                                    {{-- <td class="px-6 py-3 text-center">
+                                        Rp {{ number_format($t->total_belanja, 0, ',', '.') }}
+                                    </td> --}}
                                     <td class="px-6 py-3 text-center">
                                         <a href="{{ route('admin.struk', $t->id) }}"
                                             class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-semibold shadow transition">

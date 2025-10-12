@@ -22,11 +22,13 @@
                             <tr class="border-b hover:bg-blue-50 transition">
                                 <td class="px-6 py-3 text-center">{{ $i + 1 }}</td>
                                 <td class="px-6 py-3 text-center">
-                                    {{ \Carbon\Carbon::parse($data->tanggal)->format('d-m-Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($data->created_at)->format('d-m-Y H:i:s') }}
+                                </td>
                                 <td class="px-6 py-3 text-center">{{ auth()->user()->name }}</td>
                                 <td class="px-6 py-3 text-center">{{ $data->total_transaksi }}</td>
                                 <td class="px-6 py-3 text-center">{{ $data->total_item }}</td>
-                                <td class="px-6 py-3 text-center">Rp {{ number_format($data->total_belanja, 0, ',', '.') }}
+                                <td class="px-6 py-3 text-center">
+                                    Rp {{ number_format($data->total_harga, 0, ',', '.') }}
                                 </td>
                             </tr>
                         @empty

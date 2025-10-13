@@ -28,7 +28,7 @@
                                 <td class="px-6 py-3 text-center">{{ $data->total_transaksi }}</td>
                                 <td class="px-6 py-3 text-center">{{ $data->total_item }}</td>
                                 <td class="px-6 py-3 text-center">
-                                    Rp {{ number_format($data->total_harga, 0, ',', '.') }}
+                                    Rp {{ number_format($data->total_belanja, 0, ',', '.') }}
                                 </td>
                             </tr>
                         @empty

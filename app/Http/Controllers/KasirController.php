@@ -269,7 +269,6 @@ class KasirController extends Controller
         return view('kasir.struk', compact('transaksi'));
     }
 
-
     public function riwayatTransaksi()
     {
         $riwayat = Transaksi::with('details.buku')->latest()->paginate(10);
@@ -285,7 +284,7 @@ class KasirController extends Controller
         $end = $request->end_date ?? now()->toDateString();
 
         $kasirData = Transaksi::select(
-            'transaksi.created_at', 
+            'transaksi.created_at',
             DB::raw('DATE(transaksi.created_at) as tanggal'),
             DB::raw('COUNT(transaksi.id) as total_transaksi'),
             DB::raw('SUM(transaksi_detail.qty) as total_item'),

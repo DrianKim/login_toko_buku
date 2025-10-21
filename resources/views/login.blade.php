@@ -131,7 +131,7 @@
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                 <i class="fas fa-envelope"></i>
                             </span>
-                            <input type="email" id="email" name="email" required placeholder="nama@email.com"
+                            <input type="email" id="email" name="email" required placeholder="xxx@email.com"
                                 class="input-focus w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
                         </div>
                     </div>

@@ -74,11 +74,25 @@
 
                                 {{-- Aksi --}}
                                 <td class="px-6 py-3 text-center flex justify-center gap-3">
-                                    @include('admin.modal.tambah_stok', ['buku' => $detail->buku])
+                                    @include('admin.modal.edit_stok', ['buku' => $detail->buku])
                                     <button type="button"
                                         class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1"
-                                        data-modal-target="tambahStokModal{{ $detail->buku->id }}">
-                                        <i class="fas fa-plus"></i> Stok
+                                        data-modal-target="editStokModal{{ $detail->buku->id }}">
+                                        <i class="fas fa-pen"></i> Stok
+                                    </button>
+
+                                    @include('admin.modal.edit_detail', ['buku' => $detail->buku])
+                                    <button type="button"
+                                        class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1"
+                                        data-modal-target="editDetailModal{{ $detail->buku->id }}">
+                                        <i class="fas fa-pen"></i> Harga
+                                    </button>
+
+                                    {{-- @include('admin.modal.edit_stok', ['buku' => $detail->buku])
+                                    <button type="button"
+                                        class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1"
+                                        data-modal-target="editStokModal{{ $detail->buku->id }}">
+                                        <i class="fas fa-pen"></i> Stok
                                     </button>
 
                                     @include('admin.modal.edit_harga', ['buku' => $detail->buku])
@@ -86,7 +100,7 @@
                                         class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1"
                                         data-modal-target="editHargaModal{{ $detail->buku->id }}">
                                         <i class="fas fa-tag"></i> Harga
-                                    </button>
+                                    </button> --}}
                                 </td>
                             </tr>
                         @empty

@@ -37,6 +37,25 @@
             </a>
         </div>
 
+        <div class="mb-6 flex items-center justify-between">
+            <form action="{{ route('admin.data-buku') }}" method="GET" class="flex items-center gap-2">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode / judul buku..."
+                    class="px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm w-64">
+
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium shadow transition flex items-center gap-1">
+                    <i class="fas fa-search"></i> Cari
+                </button>
+
+                @if (request('search'))
+                    <a href="{{ route('admin.data-buku') }}"
+                        class="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-medium transition">
+                        <i class="fas fa-undo"></i> Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+
         <div class="bg-white shadow-lg rounded-2xl border border-blue-100 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm text-left text-gray-700">

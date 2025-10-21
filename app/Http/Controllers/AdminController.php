@@ -26,10 +26,21 @@ class AdminController extends Controller
         ];
         return view('admin.dashboard', $data);
     }
-    public function dataBuku()
+
+    public function dataBuku(Request $request)
     {
+        $query = DataBuku::with(['Tbkategori', 'Tbdetail']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_buku', 'like', "%{$search}%")
+                    ->orWhere('judul_buku', 'like', "%{$search}%");
+            });
+        }
+
         $data = [
-            'data_buku' => DataBuku::with(['Tbkategori', 'Tbdetail'])->paginate(10),
+            'data_buku' => $query->paginate(10)->appends($request->only('search')), // biar pagination ga ilang search-nya
         ];
 
         return view('admin.buku.index', $data);
@@ -305,28 +316,74 @@ class AdminController extends Controller
     //     }
     // }
 
-    public function tambahStok(Request $request, $id)
+    // Tambah stok buku
+    public function editStok(Request $request, $id)
     {
         $request->validate([
-            'stok_baru' => 'required|integer|min:1',
+            'aksi' => 'required|in:tambah,kurang',
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         $buku = DataBuku::findOrFail($id);
         $detail = $buku->Tbdetail;
 
+        if ($request->aksi === 'tambah') {
+            $detail->stok += $request->jumlah;
+        } else {
+            $detail->stok = max(0, $detail->stok - $request->jumlah);
+        }
+
+        $detail->save();
+
+        return back()->with('success', 'Stok buku berhasil diperbarui!');
+    }
+
+
+    public function updateDetail(Request $request, $id)
+    {
+        $request->validate([
+            'harga_baru' => 'required|integer|min:0',
+            'stok_baru'  => 'required|integer|min:0',
+        ]);
+
+        $buku = DataBuku::findOrFail($id);
+        $detail = DetailBuku::where('buku_id', $buku->id)->first();
+
         if ($detail) {
-            $detail->stok += $request->stok_baru;
-            $detail->save();
+            $detail->update([
+                'harga' => $request->harga_baru,
+                'stok'  => $request->stok_baru,
+            ]);
         } else {
             DetailBuku::create([
                 'buku_id' => $buku->id,
                 'stok' => $request->stok_baru,
-                'harga' => 0,
+                'harga' => $request->harga_baru,
             ]);
         }
 
-        return redirect()->back()->with('success', 'Stok buku berhasil ditambahkan!');
+        return back()->with('success', 'Stok dan harga buku berhasil diperbarui!');
     }
+
+    // Update stok buku
+    public function updateStok(Request $request, $id)
+    {
+        $request->validate([
+            'stok_baru' => 'required|integer|min:0',
+        ]);
+
+        $detail = DetailBuku::where('buku_id', $id)->first();
+
+        if (!$detail) {
+            return back()->with('error', 'Data buku tidak ditemukan.');
+        }
+
+        $detail->stok = $request->stok_baru;
+        $detail->save();
+
+        return back()->with('success', 'Stok buku berhasil diperbarui!');
+    }
+
 
     // Update harga buku
     public function updateHarga(Request $request, $id)

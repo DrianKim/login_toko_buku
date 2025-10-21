@@ -7,7 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\OwnerController;
 
-Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::get('/', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -52,8 +52,10 @@ Route::middleware(['auth', 'UserAccess:admin'])->group(function () {
     Route::get('admin/detail-buku/create', [AdminController::class, 'createDetailBuku'])->name('admin.detail-buku.create');
     Route::post('admin/detail-buku', [AdminController::class, 'storeDetailBuku'])->name('admin.detail-buku.store');
 
-    Route::post('/admin/detail/{id}/tambah-stok', [AdminController::class, 'tambahStok'])->name('admin.detail-buku.tambah-stok');
-    Route::put('/admin/detail/{id}/update-harga', [AdminController::class, 'updateHarga'])->name('admin.detail-buku.update-harga');
+    Route::post('/admin/detail/{id}/tambah-stok', [AdminController::class, 'editStok'])->name('admin.detail-buku.edit-stok');
+    Route::put('/admin/detail-buku/{id}/update-detail', [AdminController::class, 'updateDetail'])->name('admin.detail-buku.update-detail');
+    // Route::put('/admin/detail/{id}/update-stok', [AdminController::class, 'updateStok'])->name('admin.detail-buku.update-stok');
+    // Route::put('/admin/detail/{id}/update-harga', [AdminController::class, 'updateHarga'])->name('admin.detail-buku.update-harga');
 
     Route::get('admin/users', [AdminController::class, 'indexUser'])->name('admin.users.index');
     Route::get('admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
